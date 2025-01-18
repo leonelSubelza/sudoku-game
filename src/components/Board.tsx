@@ -2,7 +2,7 @@
 
 import { BoardSubgrids } from "@/utils/sudoku";
 import CellComponent from "./Cell";
-import BoardButtons from "./BoardButtons";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
   boardSubgrids: BoardSubgrids;
@@ -28,15 +28,14 @@ function BoardComponent({ boardSubgrids  }: Props) {
 
       {
         boardSubgrids.map( (subgrid: number[][]) => (
-          <div className="border border-slate-500">
-            {
+          <div key={uuidv4()} className="border border-slate-500"  >
               <div className="flex flex-col">
                 {
                 subgrid.map( (row: number[]) => (
-                  <div className="flex">
+                  <div key={uuidv4()} className="flex">
                     {
                       row.map( (element: number) => (
-                        <CellComponent value={element===0 ? '' : element.toString()} />
+                        <CellComponent key={uuidv4()} value={element===0 ? '' : element.toString()} />
                       ) )
                     }
                   </div>
@@ -44,8 +43,6 @@ function BoardComponent({ boardSubgrids  }: Props) {
                 ))
                 }
               </div>
-              
-            }
           </div>
           
         ))

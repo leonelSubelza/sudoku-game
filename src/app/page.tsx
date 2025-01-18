@@ -30,8 +30,7 @@ export default function Home() {
 
   return (
     <div className="min-h-dvh min-w-full flex flex-col">
-      <div className="mx-auto">SUDOKU GAME</div>
-      <div className="flex flex-col w-6/12 m-auto">
+      <div className="flex flex-col w-full lg:w-6/12 m-auto">
         <BoardComponent boardSubgrids={boardSubgrids} />
         <BoardButtons />
       </div>
