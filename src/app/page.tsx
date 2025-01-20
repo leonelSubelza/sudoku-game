@@ -1,6 +1,8 @@
 import BoardComponent from "@/components/Board";
 import BoardButtons from "@/components/BoardButtons";
-import { Board, BoardSubgrids, generateSudoku, getSubgrids } from "@/utils/sudoku";
+import { Board, BoardGame, BoardSubgrids, generateSudoku, getBoardGame, getSubgrids, removeNumbers } from "@/utils/sudoku";
+import { DIFFICULTS } from "./model/enums";
+import { GameStateContext } from "@/contexts/gameStateContext";
 
 export function printSudokuOg(board: Board) {
   console.log("OG:");
@@ -18,23 +20,22 @@ export function printSudokuOg(board: Board) {
 
 
 export default function Home() {
-  const board: Board = generateSudoku(30);
-  const boardSubgrids: BoardSubgrids = getSubgrids(board);
+  const difficult: DIFFICULTS = DIFFICULTS.NORMAL;
 
-  printSudokuOg(board);
+  const boardComplete: Board = generateSudoku(difficult);
+  const boardGame: BoardGame = getBoardGame(boardComplete,difficult);
+  // const boardSubgrids: BoardSubgrids = getSubgrids(board);
+
+  printSudokuOg(boardComplete);
   
   console.log("Subgrids");
-  console.log(boardSubgrids);
-  
-  
 
   return (
-    <div className="min-h-dvh min-w-full flex flex-col">
-      <div className="flex flex-col w-full lg:w-6/12 m-auto">
-        <BoardComponent boardSubgrids={boardSubgrids} />
-        <BoardButtons />
+      <div className="min-h-dvh min-w-full flex flex-col">
+        <div className="flex flex-col w-full lg:w-6/12 m-auto">
+          <BoardComponent initialBoard={boardGame} />
+        </div>
+        
       </div>
-      
-    </div>
   );
 }

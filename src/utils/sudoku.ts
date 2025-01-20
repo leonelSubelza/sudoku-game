@@ -1,5 +1,16 @@
+import { CellStatus, DIFFICULTS } from "@/app/model/enums";
+
 export type Board = number[][];
+export type BoardGame = Cell[][];
 export type BoardSubgrids = number[][][];
+
+export interface Cell {
+  value: number;
+  row: number;
+  col: number;
+  status: CellStatus;
+  notes: number[];
+}
 
 /**
  * Verifica si un número puede colocarse en una celda específica.
@@ -89,9 +100,11 @@ export function shuffleArray<T>(array: T[]): T[] {
 export function generateSudoku(clues: number = 30): Board {
     const board = createEmptyBoard();
     fillBoard(board);
-    return removeNumbers(board, clues);
+    // return removeNumbers(board, clues);
+    return board;
 }
 
+// POSIBLEMENTE BORRAR
 /* Genera una matriz de 3x3 representando una cuadircula de 9 numeros del sudoku */
 export function getSubgrid(board: Board,row: number, col: number): number[][] {
   let subgrid: number[][] = [];
@@ -111,6 +124,7 @@ export function getSubgrid(board: Board,row: number, col: number): number[][] {
   return subgrid;
 }
 
+// POSIBLEMENTE BORRAR
 // Genera un tablero de sudoku de 9 casilleros de 3x3
 export function getSubgrids(board: Board): BoardSubgrids {
   let subgrids: number[][][] = [];
@@ -129,6 +143,22 @@ export function getSubgrids(board: Board): BoardSubgrids {
   return subgrids;
 }
 
+
+export function getBoardGame(board: Board, difficult: DIFFICULTS): BoardGame {
+  removeNumbers(board,difficult);
+
+  return board.map( (row: number[], i: number) => (
+    row.map( (cell: number, j: number) => (
+      {
+        value: cell,
+        row: i,
+        col: j,
+        status: CellStatus.NORMAL,
+        notes: []
+      }
+    ) )
+  ))
+}
 // Generar un Sudoku con 30 pistas (nivel medio)
 // const sudoku = generateSudoku(30);
 

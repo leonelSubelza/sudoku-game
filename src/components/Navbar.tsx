@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react";
+import { ModeToggle } from "./mode-toggle";
 
 function NavbarComponent() {
 
@@ -26,8 +27,8 @@ function NavbarComponent() {
   return (
     <header>
       <nav className="flex flex-wrap w-full lg:w-6/12 mx-auto justify-between">
-        <div className="flex justify-center align-center select-none">
-          <h1>Sudoku</h1>
+        <div className="flex justify-center items-center select-none">
+          <h1 >Sudoku</h1>
         </div>
 
         <div className="flex select-none">
@@ -47,12 +48,14 @@ function NavbarComponent() {
         </DropdownMenu>
         </div>
         
-        <div className="flex justify-center align-center text-sm/6 font-semibold text-gray-900 select-none">
+        <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
           <span>Tiempo: 00:00</span>
         </div>
-        <div className="flex justify-center align-center text-sm/6 font-semibold text-gray-900 select-none">
+        <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
           <span>Errores: 0</span>
         </div>
+
+        <ModeToggle />
       </nav>
     </header>
   );
