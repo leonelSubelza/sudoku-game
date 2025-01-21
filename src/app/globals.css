@@ -53,11 +53,24 @@
 
     --chart-5: 27 87% 67%;
 
-    --radius: 0.5rem
+    --radius: 0.5rem;
+
+    --cell-background: 0, 0%, 100%;
+
+    --cell-border-default: 214, 32, 91;
+
+    --cell-status-normal: 0 0% 100%;
+    --cell-status-selected: 201 94 86;
+    --cell-status-equal: 214 32 91;
+    --cell-status-shading: 210 40 96;
+    --cell-status-error: 0 91 71;
+
   }
+
   .dark {
 
-    --background: 0 0% 3.9%;
+    /* --background: 0 0% 3.9%; */
+    --background: 0, 0%, 21%, 0.591;
 
     --foreground: 0 0% 98%;
 
@@ -103,7 +116,17 @@
 
     --chart-4: 280 65% 60%;
 
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
+
+    --cell-background: 0, 0%, 20%;
+
+    --cell-border-default: 214 30% 91% 0.363;
+
+    --cell-status-normal: 0 0% 20%;
+    --cell-status-selected: 201 84% 37%;
+    --cell-status-equal: 0 0% 0%;
+    --cell-status-shading: 0, 0%, 11%, 0.315;
+    --cell-status-error: 0 9%1 71;
   }
 }
 

@@ -14,7 +14,7 @@ function BoardButtons({onButtonPressed}: Props) {
       {
         numbers.map( (value: number) => (
           <button key={uuidv4()} className="w-10 h-10 m-2 p-2 border border-slate-200 rounded-md 
-          hover:bg-slate-100"
+          hover:bg-slate-100 dark:hover:bg-slate-800"
           onClick={()=>onButtonPressed(value)}
           >
             {value===0 ? '' : value}

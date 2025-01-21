@@ -178,9 +178,8 @@ export function isCorrect(boardComplete: Board, cell: Cell, newValue: number) {
   return boardComplete[cell.row][cell.col] === newValue;
 }
 
-export function isADefaultValue(boardGame: BoardGame, cell: Cell) {
-  return boardGame[cell.row][cell.col].valueStatus === CellValueStatus.DEFAULT 
-  && boardGame[cell.row][cell.col].value !== 0;
+export function isCellValuePreviouslyCorrect(boardComplete: Board, cell: Cell) {
+  return boardComplete[cell.row][cell.col] === cell.value;
 }
 
 // Generar un Sudoku con 30 pistas (nivel medio)

@@ -1,96 +1,15 @@
 "use client"
 
-import { Board, BoardGame, Cell, getBoardGame, isADefaultValue, isCorrect } from "@/utils/sudoku";
+import { Board, BoardGame, Cell, isCellValuePreviouslyCorrect, isCorrect } from "@/utils/sudoku";
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from "react";
 import { CellStatus, CellValueStatus } from "@/app/model/enums";
 import BoardButtons from "./BoardButtons";
+import { getBackgroundCell, getBorderCell, getColorCell, resetCellColors, updateEqualsValues, updateRowAndColRelated } from "@/utils/cell.utils";
 
 interface Props {
   initialBoard: BoardGame;
   initialBoardComplete: Board;
-}
-
-const resetCellColors = (board: BoardGame) => {
-  board.forEach( (row: Cell[]) => {
-    row.forEach( (cell: Cell) => {
-      cell.status = CellStatus.NORMAL;
-    })
-  })
-}
-
-const updateRowAndColRelated = (board: BoardGame, actualCell: Cell) => {
-  board[actualCell.row].forEach((cell: Cell) => {
-      if(cell !== actualCell){
-        cell.status = CellStatus.SHADING
-      }      
-  })
-  board.forEach((row: Cell[]) => {
-    if(row[actualCell.col] !== actualCell){
-      row[actualCell.col].status = CellStatus.SHADING;
-    }      
-})
-}
-
-const updateEqualsValues = (board: BoardGame, actualCell: Cell) => {
-  board.forEach( (row: Cell[]) => {
-    row.forEach( (cell: Cell) => {
-      if(cell !== actualCell && cell.value === actualCell.value) {
-        cell.status = CellStatus.EQUAL;
-      }
-    })
-  })
-}
-
-const getBackgroundCell = (status: CellStatus): string => {
-  let bgColor = '';
-  if(status === CellStatus.NORMAL){
-    bgColor = '';
-  }
-  if(status === CellStatus.SELECTED){
-    bgColor = 'bg-sky-200';
-  }
-  if(status === CellStatus.EQUAL){
-    bgColor = 'bg-slate-300';
-  }
-  if(status === CellStatus.SHADING){
-    bgColor = 'bg-slate-100';
-  }
-  if(status === CellStatus.ERROR){
-    bgColor = 'bg-red-400';
-  }
-  return bgColor;
-}
-
-const getBorderCell = (cell: Cell): string => {
-  let classNames = '';
-  if(cell.col===0 || cell.col===3|| cell.col===6){
-    classNames +='border-l-slate-500 '
-  }
-  if(cell.col===8){
-    classNames +='border-r-slate-500  '
-  }
-
-  if(cell.row===0 || cell.row===3|| cell.row===6){
-    classNames +='border-t-slate-500 '
-  }
-  if(cell.row===8){
-    classNames +='border-b-slate-500 '
-  }
-  return classNames;
-}
-
-const getColorCell = (cellStatus: CellValueStatus): string => {
-  let classNames = '';
-  if(cellStatus === CellValueStatus.DEFAULT){
-  }
-  if(cellStatus === CellValueStatus.CORRECT){
-    classNames +='text-sky-600'
-  }
-  if(cellStatus === CellValueStatus.INCORRECT){
-    classNames +='text-red-600'
-  }
-  return classNames;
 }
 
 function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
@@ -100,13 +19,10 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
 
   const [cellActive, setCellActive] = useState<Cell>();
 
-  const handleCellClick = (event: any, cell: Cell) => {
-    event.preventDefault();
+  const updateNewCellActive = (cell: Cell) => {
     resetCellColors(board)
 
     board[cell.row][cell.col].status = CellStatus.SELECTED;
-    console.log("se hizo click sobre celda "+cell.value);
-    
     
     updateRowAndColRelated(board,cell);
     if(cell.value !== 0){
@@ -116,10 +32,15 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
     setCellActive(board[cell.row][cell.col]);
   }
 
+  const handleCellClick = (event: any, cell: Cell) => {
+    event.preventDefault();
+    updateNewCellActive(cell);
+  }
+
   const updateCellValue = (newValue: string|number) => {
     const numbers: string[] = ['0','1','2','3','4','5','6','7','8','9'];
 
-    if(numbers.includes(newValue as string) && cellActive && newValue !== '0' && !isADefaultValue(board,cellActive)){
+    if(numbers.includes(newValue as string) && cellActive && newValue !== '0'){
       newValue = Number.parseInt(newValue as string);
       cellActive.value = newValue;
       board[cellActive.row][cellActive.col].value = newValue;
@@ -128,12 +49,13 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
       ? CellValueStatus.CORRECT 
       : CellValueStatus.INCORRECT 
     }
-    if((newValue === 'Backspace' || newValue === '0') && cellActive && !isADefaultValue(board,cellActive)){
+    if((newValue === 'Backspace' || newValue === '0') && cellActive){
       cellActive.value = 0;
       board[cellActive.row][cellActive.col].value = 0;
       cellActive.valueStatus = CellValueStatus.DEFAULT
 
     }
+    if(cellActive) updateNewCellActive(cellActive);
     setCellActive(cellActive);
     setBoard([...board]);
   }
@@ -145,20 +67,19 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
     // if(cellActive){
     //   console.log("es un valor por default?: "+isADefaultValue(board,cellActive));
     // }
-    updateCellValue(keyPressed);
+    if(cellActive && !isCellValuePreviouslyCorrect(boardComplete,cellActive)){
+      updateCellValue(keyPressed);
+    }
   };
 
   const handleBoardButtonPressed = (value: number) => {
-    console.log("se pulso: "+value);
-    if(!cellActive) return;
-
-    updateCellValue(value.toString());
+    if(cellActive && !isCellValuePreviouslyCorrect(boardComplete,cellActive)){
+      updateCellValue(value.toString());
+    }
   }
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
-    console.log("se act cell active");
-    
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
@@ -172,8 +93,7 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
           row.map((cell: Cell) => (
             <div
               key={uuidv4()}
-              className={`
-          aspect-square border border-slate-200 w-14 h-14 text-center content-center items-center cursor-pointer
+              className={`bg-cell-background aspect-square border  w-14 h-14 text-center content-center items-center cursor-pointer text-xl
           ${getBorderCell(cell)} 
           ${getBackgroundCell(cell.status)}
           ${getColorCell(cell.valueStatus)}
