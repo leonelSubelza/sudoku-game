@@ -11,3 +11,9 @@ export enum CellStatus {
   SHADING = "SHADING",
   ERROR = "ERROR",
 }
+
+export enum CellValueStatus {
+  DEFAULT = "DEFAULT",
+  CORRECT = "CORRECT",
+  INCORRECT = "INCORRECT",
+}

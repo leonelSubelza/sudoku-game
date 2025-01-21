@@ -1,4 +1,4 @@
-import { CellStatus, DIFFICULTS } from "@/app/model/enums";
+import { CellStatus, CellValueStatus, DIFFICULTS } from "@/app/model/enums";
 
 export type Board = number[][];
 export type BoardGame = Cell[][];
@@ -9,6 +9,7 @@ export interface Cell {
   row: number;
   col: number;
   status: CellStatus;
+  valueStatus: CellValueStatus;
   notes: number[];
 }
 
@@ -100,6 +101,18 @@ export function shuffleArray<T>(array: T[]): T[] {
 export function generateSudoku(clues: number = 30): Board {
     const board = createEmptyBoard();
     fillBoard(board);
+    // console.log("OG:");
+
+    // board.forEach( row => {
+    //   let rowP = "";
+    //   row.forEach( value => {
+    //     rowP = rowP + value +", ";
+    //   })
+    //   console.log(rowP);
+      
+    //   rowP = "";
+    // }) 
+
     // return removeNumbers(board, clues);
     return board;
 }
@@ -154,11 +167,22 @@ export function getBoardGame(board: Board, difficult: DIFFICULTS): BoardGame {
         row: i,
         col: j,
         status: CellStatus.NORMAL,
+        valueStatus: CellValueStatus.DEFAULT,
         notes: []
       }
     ) )
   ))
 }
+
+export function isCorrect(boardComplete: Board, cell: Cell, newValue: number) {
+  return boardComplete[cell.row][cell.col] === newValue;
+}
+
+export function isADefaultValue(boardGame: BoardGame, cell: Cell) {
+  return boardGame[cell.row][cell.col].valueStatus === CellValueStatus.DEFAULT 
+  && boardGame[cell.row][cell.col].value !== 0;
+}
+
 // Generar un Sudoku con 30 pistas (nivel medio)
 // const sudoku = generateSudoku(30);
 
