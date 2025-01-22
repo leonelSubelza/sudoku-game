@@ -55,15 +55,15 @@
 
     --radius: 0.5rem;
 
-    --cell-background: 0, 0%, 100%;
+    --cell-background: 0 0% 100%;
 
-    --cell-border-default: 214, 32, 91;
+    --cell-border-default: 214 32 91;
 
     --cell-status-normal: 0 0% 100%;
-    --cell-status-selected: 201 94 86;
-    --cell-status-equal: 214 32 91;
-    --cell-status-shading: 210 40 96;
-    --cell-status-error: 0 91 71;
+    --cell-status-selected: 201 94% 86%;
+    --cell-status-equal: 214 32% 91%;
+    --cell-status-shading: 210 40% 96%;
+    --cell-status-error: 0 91% 71%;
 
   }
 

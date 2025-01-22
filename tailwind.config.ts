@@ -54,11 +54,11 @@ export default {
 					'background': 'hsl(var(--cell-background))',
 					'border-default': 'hsl(var(--cell-border-default))',
 
-					'status-normal':'hsl(var(--cell-status-normal))',
-					'status-selected':'hsl(var(--cell-status-selected))',
-					'status-equal':'hsl(var(--cell-status-equal))',
-					'status-shading':'hsl(var(--cell-status-shading))',
-					'status-error':'hsl(var(--cell-status-error))',
+					'status-normal': 'hsl(var(--cell-status-normal))',
+					'status-selected': 'hsl(var(--cell-status-selected))',
+					'status-equal': 'hsl(var(--cell-status-equal))',
+					'status-shading': 'hsl(var(--cell-status-shading))',
+					'status-error': 'hsl(var(--cell-status-error))',
 				}
   		},
   		borderRadius: {

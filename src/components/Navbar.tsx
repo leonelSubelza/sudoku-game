@@ -1,28 +1,19 @@
 "use client"
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useState } from "react";
 import { ModeToggle } from "./mode-toggle";
+import { Lightbulb } from "lucide-react";
+import { Button } from "./ui/button";
+
+import NavItemDifficultDropdownComponent from "./NavItemDifficultDropdown";
+import { useContext } from "react";
+import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
+
+// interface Props {
+//   difficult: string;
+// }
 
 function NavbarComponent() {
-
-  const [difficult, setDifficult] = useState<string>('Normal');
-
-  const handleDifficultClick = (value: string) => {
-    if(value === difficult) {
-      return;
-    }
-    if(confirm("Está seguro que desea cambiar de dificultad. Esto reiniciará la partida")){
-      setDifficult(value);
-    }
-  }
+  const { time,errors,contHelps } = useContext(gameStateContext) as GameStateContextType;
 
   return (
     <header>
@@ -32,28 +23,22 @@ function NavbarComponent() {
         </div>
 
         <div className="flex select-none">
-          
-          <DropdownMenu>
-          <DropdownMenuTrigger>
-            <span className="">
-              Dificultad: {difficult}
-            </span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem onClick={() => handleDifficultClick('Fácil')}>Fácil</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleDifficultClick('Medio')}>Medio</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleDifficultClick('Dificil')}>Dificil</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <NavItemDifficultDropdownComponent />
         </div>
         
         <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
-          <span>Tiempo: 00:00</span>
+          <span>Tiempo: {time}</span>
         </div>
         <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
-          <span>Errores: 0</span>
+          <span>Errores: {errors}</span>
         </div>
+        <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
+          <Button variant="outline" size="icon">
+            <Lightbulb />
+            <span className="sr-only">Sugerencias {contHelps}</span>
+          </Button>
+        </div>
+        
 
         <ModeToggle />
       </nav>
