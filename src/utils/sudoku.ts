@@ -1,10 +1,10 @@
-import { CellStatus, CellValueStatus, DIFFICULTS } from "@/app/model/enums";
+import { CellStatus, CellValueStatus, DIFFICULTS } from "@/model/enums";
 
-export type Board = number[][];
-export type BoardGame = Cell[][];
-export type BoardSubgrids = number[][][];
+type Board = number[][];
+type BoardGame = Cell[][];
+type BoardSubgrids = number[][][];
 
-export interface Cell {
+interface Cell {
   value: number;
   row: number;
   col: number;
@@ -114,6 +114,8 @@ export function generateSudoku(clues: number = 30): Board {
     // }) 
 
     // return removeNumbers(board, clues);
+    console.log("se genera un sudoku nuevo");
+    
     return board;
 }
 
@@ -175,6 +177,13 @@ export function getBoardGame(board: Board, difficult: DIFFICULTS): BoardGame {
 }
 
 export function isCorrect(boardComplete: Board, cell: Cell, newValue: number) {
+  console.log("board complete que se evalua:");
+  console.log(boardComplete);
+  console.log("cell: ");
+  console.log(cell);
+  
+  
+  
   return boardComplete[cell.row][cell.col] === newValue;
 }
 

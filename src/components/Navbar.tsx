@@ -13,7 +13,7 @@ import { gameStateContext, GameStateContextType } from "@/contexts/gameStateCont
 // }
 
 function NavbarComponent() {
-  const { time,errors,contHelps } = useContext(gameStateContext) as GameStateContextType;
+  const { time,errors,contHelps, setContHelps } = useContext(gameStateContext) as GameStateContextType;
 
   return (
     <header>
@@ -33,10 +33,10 @@ function NavbarComponent() {
           <span>Errores: {errors}</span>
         </div>
         <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
-          <Button variant="outline" size="icon">
+          <Button variant="outline" size="icon" onClick={()=>setContHelps(contHelps-1)}>
             <Lightbulb />
-            <span className="sr-only">Sugerencias {contHelps}</span>
           </Button>
+          <span className="p-2">{contHelps}/3</span>
         </div>
         
 

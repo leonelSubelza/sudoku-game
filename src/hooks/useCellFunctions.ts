@@ -1,4 +1,4 @@
-import { CellStatus, CellValueStatus } from "@/app/model/enums";
+import { CellStatus, CellValueStatus } from "@/model/enums";
 import { BoardGame, Cell } from "@/utils/sudoku";
 
 export function useCellFunctions() {

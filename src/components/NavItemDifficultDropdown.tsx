@@ -20,7 +20,7 @@ import {
 } from "./ui/alert-dialog";
 import { useContext, useState } from "react";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
-import { DIFFICULTS } from "@/app/model/enums";
+import { DIFFICULTS } from "@/model/enums";
 
 const getDifficultName = (difficult: DIFFICULTS): string => {
   let ret = '';
@@ -40,7 +40,6 @@ function NavItemDifficultDropdownComponent() {
   const [difficultChosen,setDifficultChosen] = useState<DIFFICULTS>(difficult);
 
   const handleNewGame = () => {
-    console.log("nueva dificultad: "+difficultChosen);
     setDifficult(difficultChosen)
   }
 

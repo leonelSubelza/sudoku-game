@@ -1,6 +1,6 @@
 "use client"
 
-import { CellStatus } from "@/app/model/enums";
+import { CellStatus } from "@/model/enums";
 import { Cell } from "@/utils/sudoku";
 
 interface Props {

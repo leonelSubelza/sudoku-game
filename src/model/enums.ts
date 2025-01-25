@@ -17,3 +17,10 @@ export enum CellValueStatus {
   CORRECT = "CORRECT",
   INCORRECT = "INCORRECT",
 }
+
+export enum GameStatus {
+  PLAYING = "PLAYING",
+  RESET = "RESET",
+  NEW_GAME = "NEW_GAME",
+  FINISHED = "FINISHED",
+}

@@ -20,11 +20,7 @@ export const metadata: Metadata = {
   description: "A simple Sudoku game made it with NextJs and shadcn",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode;}) {
   return (
     <html lang="es" suppressHydrationWarning>
       <body

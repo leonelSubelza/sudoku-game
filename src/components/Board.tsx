@@ -1,17 +1,18 @@
 "use client"
 
-import { Board, BoardGame, Cell, isCellValuePreviouslyCorrect, isCorrect } from "@/utils/sudoku";
+import { Board, BoardGame, Cell } from "@/model/entities";
 import { v4 as uuidv4 } from 'uuid';
 import { useContext, useEffect, useState } from "react";
-import { CellStatus, CellValueStatus } from "@/app/model/enums";
+import { CellStatus, CellValueStatus } from "@/model/enums";
 import BoardButtons from "./BoardButtons";
 // import { getBackgroundCell, getBorderCell, getColorCell, resetCellColors, updateEqualsValues, updateRowAndColRelated } from "@/utils/cell.utils";
-
+import { generateSudoku, getBoardGame, isCellValuePreviouslyCorrect, isCorrect } from '@/utils/sudoku';
 import { Dialog, DialogTrigger } from "./ui/dialog";
 import DialogBoardComponent from "./DialogBoard";
 import { Button } from "./ui/button";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
 import { useCellFunctions } from "@/hooks/useCellFunctions";
+import { useSudokuFunctions } from "@/hooks/useSudokuFunctions";
 
 /*
 export const resetCellColors = (board: BoardGame) => {
@@ -102,17 +103,29 @@ interface Props {
   initialBoardComplete: Board;
 }
 
-function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
-
-  const {errors,setErrors} = useContext(gameStateContext) as GameStateContextType;
+function BoardComponent({initialBoard, initialBoardComplete }: Props) {
+  // const { print, generateSudoku, getBoardGame, isCellValuePreviouslyCorrect, isCorrect } = useSudokuFunctions();
+  
   const [board, setBoard] = useState<BoardGame>(initialBoard);
   const [boardComplete, setBoardComplete] = useState<Board>(initialBoardComplete);
-
+  
   const [cellActive, setCellActive] = useState<Cell>();
-
+  
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+  
+  const { difficult, setDifficult, errors, setErrors, setTime, contHelps,numberCounter,setNumberCounter, } =
+    useContext(gameStateContext) as GameStateContextType;
+  
+  const {
+    getBackgroundCell,
+    getBorderCell,
+    getColorCell,
+    resetCellColors,
+    updateEqualsValues,
+    updateRowAndColRelated,
+  } = useCellFunctions();
 
-  const { getBackgroundCell, getBorderCell, getColorCell, resetCellColors, updateEqualsValues, updateRowAndColRelated } = useCellFunctions();
+  const { showCorrectValue,getActualNumberCounter } = useSudokuFunctions();
 
   const updateNewCellActive = (cell: Cell) => {
     resetCellColors(board);
@@ -128,8 +141,6 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
   }
 
   const handleCellClick = (event: any, cell: Cell) => {
-    console.log("se hizo click sobre "+cell.value);
-    
     event.preventDefault();
     updateNewCellActive(cell);
   }
@@ -144,16 +155,21 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
 
       if(isCorrect(boardComplete,cellActive,newValue)) {
         cellActive.valueStatus = CellValueStatus.CORRECT;
+        numberCounter[newValue-1]++;
+        setNumberCounter([...numberCounter])
       }else{
         setErrors(errors+1);
         cellActive.valueStatus = CellValueStatus.INCORRECT ;
       }
     }
     if((newValue === 'Backspace' || newValue === '0') && cellActive){
+      numberCounter[cellActive.value-1]--;
+      setNumberCounter([...numberCounter]);
+
       cellActive.value = 0;
       board[cellActive.row][cellActive.col].value = 0;
       cellActive.valueStatus = CellValueStatus.DEFAULT
-
+      
     }
     if(cellActive) updateNewCellActive(cellActive);
     setCellActive(cellActive);
@@ -163,11 +179,6 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
   const handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault();
     let keyPressed: string|number = event.key;
-    // console.log("cellActive "+cellActive?.value);
-    // console.log("key "+keyPressed);
-    // if(cellActive){
-    //   console.log("es un valor por default?: "+isADefaultValue(board,cellActive));
-    // }
     if(cellActive && !isCellValuePreviouslyCorrect(boardComplete,cellActive)){
       updateCellValue(keyPressed);
     }
@@ -186,6 +197,42 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
     };
   }, [cellActive,errors]);
 
+  useEffect(()=>{
+    const correctValue = showCorrectValue(boardComplete,board);
+    if(correctValue) {
+      numberCounter[correctValue.value-1]++;
+      setNumberCounter([...numberCounter]);
+    }
+
+  },[contHelps])
+
+  // useEffect(() => {
+  //   console.log("se cambio dificultad se REINCIAI");
+    
+  //   const boardC: Board = generateSudoku(difficult);
+  //   const boardG = getBoardGame(structuredClone(boardComplete),difficult);
+  //   setBoardComplete(boardC);
+  //   setBoard(boardG)
+  //   setTime('00:00:00');
+  //   setContHelps(3);
+
+
+  // },[setDifficult])
+
+  useEffect(() => {
+    let allNumberUsed = true;
+    numberCounter.forEach( (value: number) => allNumberUsed = allNumberUsed && value===9 );
+    if(allNumberUsed) {
+      setIsOpenDialog(true);
+      console.log("juego terminado");
+    }
+    
+  },[numberCounter])
+
+  useEffect(() => {
+    setNumberCounter(getActualNumberCounter(board));
+  },[])
+
   return (
     <>
     <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
@@ -194,7 +241,7 @@ function BoardComponent({ initialBoard, initialBoardComplete }: Props) {
       </DialogTrigger>
       <div className="grid grid-cols-9 gap-0 m-auto max-w-screen-md aspect-square select-none">
         {/* Tablero completo de 81 cuadrados */}
-        {board.map((row: Cell[]) =>
+        {board&&board.map((row: Cell[]) =>
           row.map((cell: Cell) => (
             <div
               key={uuidv4()}
