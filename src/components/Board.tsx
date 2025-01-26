@@ -225,6 +225,9 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
     if(allNumberUsed) {
       setIsOpenDialog(true);
       console.log("juego terminado");
+    }else{
+      // console.log("numberCounter:");
+      // console.log(numberCounter);
     }
     
   },[numberCounter])

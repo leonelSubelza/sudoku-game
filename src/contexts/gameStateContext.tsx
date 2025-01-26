@@ -24,7 +24,6 @@ export function useGameStateContext() {
 
 export function GameStateContext({children}: GameStateProviderProps) {
 
-  // AGREGAR UN FLAG PARA SABER SI LA APLICACIONE SE ESTA REINCIANDO, O SINO UN ENUM PARA SABER SI SE ESTA REINCIANDO, JUGANDO, TERMNIANDO AUJNQUE NOSE PARA QUE SERVIRÍA ESTO
   const [gameState, setGameState] = useState<GameStatus>(GameStatus.PLAYING);
   const [difficult,setDifficult] = useState<DIFFICULTS>(DIFFICULTS.NORMAL);
   const [errors, setErrors] = useState<number>(0);
