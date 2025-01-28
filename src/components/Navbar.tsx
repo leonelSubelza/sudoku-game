@@ -17,7 +17,10 @@ function NavbarComponent() {
   const { time,errors,contHelps, setContHelps } = useContext(gameStateContext) as GameStateContextType;
 
   return (
-      <nav className="flex flex-wrap w-full items-center justify-evenly m-0 lg:mt-auto mb-0 mx-auto gap-1">
+      <nav className="flex w-full">
+        <div className="flex flex-wrap w-full items-center justify-evenly my-auto ml-0 mr-auto gap-1
+        md:w-full 
+        lg:w-[60%] lg:mt-auto lg:justify-between">
           <div className="flex justify-center items-center select-none p-1">
             {/* <h1>Sudoku</h1> */}
             <NavItemSudokuOptions />
@@ -44,6 +47,8 @@ function NavbarComponent() {
           <div className="flex justify-center items-center text-sm/6 p-1">
             <ModeToggle />
           </div> */}
+        </div>
+          
       </nav>
   );
 }

@@ -287,15 +287,17 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
         {/* <DialogTrigger asChild>
         <Button variant="outline">Dialog</Button>
       </DialogTrigger> lg:w-6/12 lg:max-w-screen-md*/}
-        <div className="flex flex-col m-auto w-full m-h-dvh h-full
-        md:w-[40%] md:h-auto
-        lg:w-[30%] lg:my-auto lg:ml-auto lg:mr-0 lg:h-auto">
+        <div className="flex flex-col m-auto w-[98%] m-h-dvh h-full
+        md:w-[60%] md:h-auto
+        lg:w-[60%] ">
           <NavbarComponent />
 
-          <div className="flex flex-col w-[99%] m-auto items-center content-center
+          <div className="flex flex-col w-full m-auto items-center content-center
            lg:flex-row lg:h-auto lg:mx-auto lg:mt-3 lg:mb-auto">
             <div
               className="grid grid-cols-9 w-full gap-0 m-auto aspect-square select-none 
+              md:w-[80%]
+              lg:w-[60%]
  
 "
             >
@@ -321,13 +323,11 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
                   ))
                 )}
             </div>
-          </div>
-        </div>
-  
 
-        <div className="flex flex-col w-full mx-auto pb-5 
-        lg:flex-col-reverse lg:w-auto lg:my-auto lg:mr-auto lg:ml-3">
-          <div className="flex flex-wrap w-full justify-center items-center justify-evenly lg:grid grid-cols-2">
+
+            <div className="flex flex-col w-full mx-auto pb-5 
+        lg:flex-col-reverse lg:w-[40%] lg:my-auto lg:mr-auto lg:ml-3">
+          <div className="flex w-full justify-center items-center justify-evenly ">
             <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
               <Button
                 variant="outline"
@@ -373,6 +373,14 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
 
           <BoardButtons onButtonPressed={handleBoardButtonPressed} />
         </div>
+          </div>
+
+
+
+        </div>
+  
+
+
 
         <DialogBoardComponent />
       </Dialog>
