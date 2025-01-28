@@ -1,12 +1,13 @@
 "use client"
 
 import { ModeToggle } from "./mode-toggle";
-import { Lightbulb } from "lucide-react";
+import { Eraser, Lightbulb, Pencil, RotateCcw, Undo2 } from "lucide-react";
 import { Button } from "./ui/button";
 
 import NavItemDifficultDropdownComponent from "./NavItemDifficultDropdown";
 import { useContext } from "react";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
+import NavItemSudokuOptions from "./NavItemSudokuOptions";
 
 // interface Props {
 //   difficult: string;
@@ -16,33 +17,34 @@ function NavbarComponent() {
   const { time,errors,contHelps, setContHelps } = useContext(gameStateContext) as GameStateContextType;
 
   return (
-    <header>
-      <nav className="flex flex-wrap w-full lg:w-6/12 mx-auto justify-between">
-        <div className="flex justify-center items-center select-none">
-          <h1 >Sudoku</h1>
-        </div>
+      <nav className="flex flex-wrap w-full items-center justify-evenly m-0 lg:mt-auto mb-0 mx-auto gap-1">
+          <div className="flex justify-center items-center select-none p-1">
+            {/* <h1>Sudoku</h1> */}
+            <NavItemSudokuOptions />
+          </div>
 
-        <div className="flex select-none">
-          <NavItemDifficultDropdownComponent />
-        </div>
-        
-        <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
-          <span>Tiempo: {time}</span>
-        </div>
-        <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
-          <span>Errores: {errors}</span>
-        </div>
-        <div className="flex justify-center items-center text-sm/6 font-semibold select-none">
-          <Button variant="outline" size="icon" onClick={()=>setContHelps(contHelps-1)}>
-            <Lightbulb />
-          </Button>
-          <span className="p-2">{contHelps}/3</span>
-        </div>
-        
+          <div className="flex select-none p-1">
+            <NavItemDifficultDropdownComponent />
+          </div>
 
-        <ModeToggle />
+          <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+            <span>Tiempo: </span>
+            <span>{time}</span>
+          </div>
+          <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+            <span>Errores: </span>
+            <span>{errors}</span>
+          </div>
+
+          {/* <div className="flex justify-center items-center text-sm/6 p-1">
+            <Button variant="default" className="">
+              Nueva Partida
+            </Button>
+          </div>
+          <div className="flex justify-center items-center text-sm/6 p-1">
+            <ModeToggle />
+          </div> */}
       </nav>
-    </header>
   );
 }
 

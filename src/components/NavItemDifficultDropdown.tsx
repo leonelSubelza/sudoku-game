@@ -20,7 +20,9 @@ import {
 } from "./ui/alert-dialog";
 import { useContext, useState } from "react";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
-import { DIFFICULTS } from "@/model/enums";
+import { DIFFICULTS, GameStatus } from "@/model/enums";
+import { Button } from "./ui/button";
+import { ChevronDown } from "lucide-react";
 
 const getDifficultName = (difficult: DIFFICULTS): string => {
   let ret = '';
@@ -35,19 +37,25 @@ interface Props {
 }
 
 function NavItemDifficultDropdownComponent() {
-  const { difficult, setDifficult } = useContext(gameStateContext) as GameStateContextType;
+  const { difficult, setDifficult,setGameState } = useContext(gameStateContext) as GameStateContextType;
 
   const [difficultChosen,setDifficultChosen] = useState<DIFFICULTS>(difficult);
 
   const handleNewGame = () => {
-    setDifficult(difficultChosen)
+    setDifficult(difficultChosen);
+    setGameState(GameStatus.RESET);
   }
 
   return (
     <AlertDialog>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <span className="">Dificultad: {getDifficultName(difficult)}</span>
+        {/* <Button variant={"outline"} className="">Dificultad: {getDifficultName(difficult)}</Button> */}
+          <Button 
+          variant="ghost"
+          >
+            {getDifficultName(difficult)}<ChevronDown />
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {/* <DropdownMenuSeparator /> */}

@@ -227,21 +227,33 @@ export function useSudokuFunctions() {
     }) 
   }
 
-  function showCorrectValue(boardComplete: Board, boardGame: BoardGame): Cell|undefined {
-    // flatMap crea una copia del array  
+  function showCorrectValue(
+    boardComplete: Board,
+    boardGame: BoardGame
+  ): Cell | undefined {
+    // flatMap crea una copia del array
     const emptyCells: Cell[] = boardGame.flatMap((row: Cell[]) =>
-      row.filter((c: Cell) => c.value === 0)
+      row.filter((c: Cell) => (c.valueStatus === CellValueStatus.INCORRECT || c.value === 0))
     );
     if (emptyCells.length === 0) {
       return undefined;
     }
-  
+
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
     const randomCell = emptyCells[randomIndex];
-  
+
     boardGame[randomCell.row][randomCell.col].value =
       boardComplete[randomCell.row][randomCell.col];
-  
+
+    console.log("celda correcta:");
+    console.log(randomCell);
+
+    // console.log("show correct value:");
+    console.log("BoardComplete");
+    console.log(boardComplete);
+    console.log("BoardGame");
+    console.log(boardGame);
+
     return randomCell;
   }
 

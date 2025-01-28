@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode;}) 
   return (
     <html lang="es" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh min-w-dvw flex flex-col`}
       >
         <GameStateContext>
           <ThemeProvider
@@ -33,8 +33,9 @@ export default function RootLayout({ children }: { children: React.ReactNode;}) 
             enableSystem
             disableTransitionOnChange
           >
-            <NavbarComponent />
-            {children}
+            <main className="h-full w-full flex flex-col">
+              {children}
+            </main>
           </ThemeProvider>
         </GameStateContext>
       </body>

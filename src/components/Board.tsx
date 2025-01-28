@@ -3,7 +3,7 @@
 import { Board, BoardGame, Cell } from "@/model/entities";
 import { v4 as uuidv4 } from 'uuid';
 import { useContext, useEffect, useState } from "react";
-import { CellStatus, CellValueStatus } from "@/model/enums";
+import { CellStatus, CellValueStatus, GameStatus } from "@/model/enums";
 import BoardButtons from "./BoardButtons";
 // import { getBackgroundCell, getBorderCell, getColorCell, resetCellColors, updateEqualsValues, updateRowAndColRelated } from "@/utils/cell.utils";
 import { generateSudoku, getBoardGame, isCellValuePreviouslyCorrect, isCorrect } from '@/utils/sudoku';
@@ -13,6 +13,8 @@ import { Button } from "./ui/button";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
 import { useCellFunctions } from "@/hooks/useCellFunctions";
 import { useSudokuFunctions } from "@/hooks/useSudokuFunctions";
+import { Eraser, Lightbulb, Pencil, Undo2 } from "lucide-react";
+import NavbarComponent from "./Navbar";
 
 /*
 export const resetCellColors = (board: BoardGame) => {
@@ -113,8 +115,18 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
   
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   
-  const { difficult, setDifficult, errors, setErrors, setTime, contHelps,numberCounter,setNumberCounter, } =
-    useContext(gameStateContext) as GameStateContextType;
+  const {
+    difficult,
+    errors,
+    setErrors,
+    setTime,
+    contHelps,
+    setContHelps,
+    numberCounter,
+    setNumberCounter,
+    gameState,
+    setGameState,
+  } = useContext(gameStateContext) as GameStateContextType;
   
   const {
     getBackgroundCell,
@@ -156,7 +168,14 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
       if(isCorrect(boardComplete,cellActive,newValue)) {
         cellActive.valueStatus = CellValueStatus.CORRECT;
         numberCounter[newValue-1]++;
-        setNumberCounter([...numberCounter])
+        setNumberCounter([...numberCounter]);
+
+        console.log("valor correcto:");
+        console.log(cellActive);
+        console.log("numberCounter: ");
+        console.log(numberCounter);
+        
+        
       }else{
         setErrors(errors+1);
         cellActive.valueStatus = CellValueStatus.INCORRECT ;
@@ -182,11 +201,49 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
     if(cellActive && !isCellValuePreviouslyCorrect(boardComplete,cellActive)){
       updateCellValue(keyPressed);
     }
+    if(keyPressed.toUpperCase() === 'H') {
+      setContHelps(contHelps-1);
+    }
   };
 
   const handleBoardButtonPressed = (value: number) => {
     if(cellActive && !isCellValuePreviouslyCorrect(boardComplete,cellActive)){
       updateCellValue(value.toString());
+    }
+  }
+
+  const finishGame = () => {
+    setIsOpenDialog(true);
+    setGameState(GameStatus.FINISHED);
+  }
+
+  const resetGame = () => {
+    console.log("se REINCIAI");
+    const boardC: Board = generateSudoku(difficult);
+    const boardG = getBoardGame(structuredClone(boardC),difficult);
+    setBoardComplete([...boardC]);
+    setBoard([...boardG])
+    setTime('00:00:00');
+    setContHelps(3);
+    setNumberCounter(getActualNumberCounter(boardG));
+    
+    setGameState(GameStatus.PLAYING);
+
+    console.log("BoardComplete");
+    console.log(boardC);
+    console.log("BoardGame");
+    console.log(boardG);
+    
+  }
+
+  const handleShowHelp = () => {
+    if(contHelps===3) return;
+    const correctValue = showCorrectValue(boardComplete,board);
+    if(correctValue) {
+      numberCounter[correctValue.value-1]++;
+      setNumberCounter([...numberCounter]);
+      setBoard([...board]);
+      updateNewCellActive(board[correctValue.row][correctValue.col]);
     }
   }
 
@@ -197,37 +254,24 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
     };
   }, [cellActive,errors]);
 
-  useEffect(()=>{
-    const correctValue = showCorrectValue(boardComplete,board);
-    if(correctValue) {
-      numberCounter[correctValue.value-1]++;
-      setNumberCounter([...numberCounter]);
+  useEffect(()=> handleShowHelp() ,[contHelps])
+
+  useEffect(() => {
+    if(gameState === GameStatus.RESET) {
+      resetGame();
     }
 
-  },[contHelps])
-
-  // useEffect(() => {
-  //   console.log("se cambio dificultad se REINCIAI");
-    
-  //   const boardC: Board = generateSudoku(difficult);
-  //   const boardG = getBoardGame(structuredClone(boardComplete),difficult);
-  //   setBoardComplete(boardC);
-  //   setBoard(boardG)
-  //   setTime('00:00:00');
-  //   setContHelps(3);
-
-
-  // },[setDifficult])
+  },[gameState])
 
   useEffect(() => {
     let allNumberUsed = true;
     numberCounter.forEach( (value: number) => allNumberUsed = allNumberUsed && value===9 );
     if(allNumberUsed) {
-      setIsOpenDialog(true);
+      finishGame();
       console.log("juego terminado");
     }else{
-      // console.log("numberCounter:");
-      // console.log(numberCounter);
+      console.log("numberCounter:");
+      console.log(numberCounter);
     }
     
   },[numberCounter])
@@ -236,30 +280,101 @@ function BoardComponent({initialBoard, initialBoardComplete }: Props) {
     setNumberCounter(getActualNumberCounter(board));
   },[])
 
+
   return (
     <>
-    <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
-      <DialogTrigger asChild>
+      <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
+        {/* <DialogTrigger asChild>
         <Button variant="outline">Dialog</Button>
-      </DialogTrigger>
-      <div className="grid grid-cols-9 gap-0 m-auto max-w-screen-md aspect-square select-none">
-        {/* Tablero completo de 81 cuadrados */}
-        {board&&board.map((row: Cell[]) =>
-          row.map((cell: Cell) => (
-            <div
-              key={uuidv4()}
-              className={`bg-cell-background aspect-square border w-14 h-14 text-center content-center items-center cursor-pointer text-xl ${getBorderCell(cell)} ${getBackgroundCell(cell.status)} ${getColorCell(cell.valueStatus)}
-        `}
-              onClick={(event) => handleCellClick(event,cell)}
-            >
-              {cell.value !== 0 ? cell.value : ""}
-            </div>
-          ))
-        )}
-      </div>
-      <BoardButtons onButtonPressed={handleBoardButtonPressed}/>
+      </DialogTrigger> lg:w-6/12 lg:max-w-screen-md*/}
+        <div className="flex flex-col m-auto w-full m-h-dvh h-full
+        md:w-[40%] md:h-auto
+        lg:w-[30%] lg:my-auto lg:ml-auto lg:mr-0 lg:h-auto">
+          <NavbarComponent />
 
-      <DialogBoardComponent />
+          <div className="flex flex-col w-[99%] m-auto items-center content-center
+           lg:flex-row lg:h-auto lg:mx-auto lg:mt-3 lg:mb-auto">
+            <div
+              className="grid grid-cols-9 w-full gap-0 m-auto aspect-square select-none 
+ 
+"
+            >
+              {/* Tablero completo de 81 cuadrados */}
+              {board &&
+                board.map((row: Cell[]) =>
+                  row.map((cell: Cell) => (
+                    // Para lo responsive primero se pone los estilos en mobile, y luego con lg: ->todo lo que venga será en window view
+
+                    <div
+                      key={uuidv4()}
+                      className={`bg-cell-background aspect-square border w-auto h-auto text-center content-center items-center cursor-pointer text-xl ${getBorderCell(
+                        cell
+                      )} ${getBackgroundCell(cell.status)} ${getColorCell(
+                        cell.valueStatus
+                      )}
+      lg:w-full h-full
+`}
+                      onClick={(event) => handleCellClick(event, cell)}
+                    >
+                      {cell.value !== 0 ? cell.value : ""}
+                    </div>
+                  ))
+                )}
+            </div>
+          </div>
+        </div>
+  
+
+        <div className="flex flex-col w-full mx-auto pb-5 
+        lg:flex-col-reverse lg:w-auto lg:my-auto lg:mr-auto lg:ml-3">
+          <div className="flex flex-wrap w-full justify-center items-center justify-evenly lg:grid grid-cols-2">
+            <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setContHelps(contHelps - 1)}
+              >
+                <Lightbulb />
+              </Button>
+              <span className="p-2">{contHelps}/3</span>
+            </div>
+            <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setContHelps(contHelps - 1)}
+              >
+                <Pencil />
+              </Button>
+              <span className="p-2">Notas</span>
+            </div>
+            <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setContHelps(contHelps - 1)}
+              >
+                <Undo2 />
+              </Button>
+              <span className="p-2">Deshacer</span>
+            </div>
+
+            <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setContHelps(contHelps - 1)}
+              >
+                <Eraser />
+              </Button>
+              <span className="p-2">Borrar</span>
+            </div>
+          </div>
+
+          <BoardButtons onButtonPressed={handleBoardButtonPressed} />
+        </div>
+
+        <DialogBoardComponent />
       </Dialog>
     </>
   );

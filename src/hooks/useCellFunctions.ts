@@ -1,5 +1,5 @@
 import { CellStatus, CellValueStatus } from "@/model/enums";
-import { BoardGame, Cell } from "@/utils/sudoku";
+import { BoardGame, Cell } from "@/model/entities";
 
 export function useCellFunctions() {
   const resetCellColors = (board: BoardGame) => {
