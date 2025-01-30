@@ -48,7 +48,7 @@ export default function NavItemSudokuOptions() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost">
+        <Button variant="ghost" className="px-0">
           <Menu /> Sudoku
         </Button>
       </DropdownMenuTrigger>

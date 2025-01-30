@@ -1,34 +1,73 @@
-"use client"
-
-import { gameStateContext, GameStateContextType } from '@/contexts/gameStateContext';
-import { useContext } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-
-const numbers: number[] = [1,2,3,4,5,6,7,8,9]
+import { Eraser, Lightbulb, Pencil, Undo2 } from "lucide-react";
+import { Button } from "./ui/button";
+import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
+import { useContext } from "react";
+import { Cell } from "@/model/entities";
 
 interface Props {
-  onButtonPressed: (value: number) => void;
+  onDeleteValue: () => void;
+  onUndoValue: () => void,
+  onActiveNotes: () => void,
 }
 
-function BoardButtons({onButtonPressed}: Props) {
-  const { numberCounter } = useContext(gameStateContext) as GameStateContextType;
+function BoardButtons( {onDeleteValue, onUndoValue,onActiveNotes}:Props ) {
+  const {
+    contHelps,
+    setContHelps,
+  } = useContext(gameStateContext) as GameStateContextType;
 
-  return ( 
-    <div className="flex flex-wrap mx-auto w-full max-w-full justify-evenly select-none
-    lg:grid grid-cols-3 lg:aspect-square">
-      {
-        numbers.map( (value: number, index: number) => (
-          <button key={uuidv4()} className={`${numberCounter[index] && numberCounter[index] === 9 && 'opacity-0'} w-10 h-10 p-1 mt-1 border border-slate-200 rounded-md 
-          hover:bg-slate-100 dark:hover:bg-slate-800 flex justify-center items-center text-xl
-          lg:m-2 lg:p-2 lg:m-auto lg:mx-auto lg:my-2 lg:aspect-square lg:w-[80%] lg:h-[80%]`}
-          onClick={()=>onButtonPressed(value)}
-          >
-            <p>{value===0 ? '' : value}</p>
-          </button>
-        ))
-      }
-    </div>
-   );
+  return (
+
+          <div className="flex flex-wrap w-full justify-center items-center justify-evenly lg:mt-2">
+            <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setContHelps(contHelps - 1)}
+                className="lg:w-[55px] lg:h-[55px]"
+              >
+                <Lightbulb />
+              </Button>
+              <span className="p-2">{contHelps}/3</span>
+            </div>
+            <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={onActiveNotes}
+                className="lg:w-[55px] lg:h-[55px]"
+              >
+                <Pencil />
+              </Button>
+              <span className="p-2">Notas</span>
+            </div>
+            <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+              <Button
+                variant="outline"
+                size="icon"
+                // onClick={() => onUndoValue()}
+                className="lg:w-[55px] lg:h-[55px]"
+              >
+                <Undo2 />
+              </Button>
+              <span className="p-2">Deshacer</span>
+            </div>
+
+            <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => onDeleteValue()}
+                className="lg:w-[55px] lg:h-[55px]"
+              >
+                <Eraser />
+              </Button>
+              <span className="p-2">Borrar</span>
+            </div>
+          </div>
+
+
+  )
 }
 
-export default BoardButtons;
+export default BoardButtons

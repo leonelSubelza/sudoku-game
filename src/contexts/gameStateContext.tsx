@@ -1,5 +1,6 @@
 "use client"
 
+import { Cell } from "@/model/entities";
 import { DIFFICULTS, GameStatus } from "@/model/enums";
 import React, { ReactNode, useContext, useState } from "react";
 
@@ -10,6 +11,8 @@ export type GameStateContextType = {
   time: string, setTime: (value: string)=> void,
   contHelps: number, setContHelps: (value: number)=> void,
   numberCounter: number[],setNumberCounter: (value: number[]) => void,
+  inputStack: Cell[], setInputStack: (value: Cell[]) => void,
+  showNotes: boolean, setShowNotes: (value: boolean) => void,
 }
 
 interface GameStateProviderProps {
@@ -30,6 +33,9 @@ export function GameStateContext({children}: GameStateProviderProps) {
   const [time, setTime] = useState<string>('00:00:00');
   const [contHelps, setContHelps] = useState<number>(3);
   const [numberCounter,setNumberCounter] = useState<number[]>(Array(9).fill(0));
+  const [showNotes, setShowNotes] = useState<boolean>(false);
+
+  const [inputStack, setInputStack] = useState<Cell[]>([]);
 
   return (
     <gameStateContext.Provider
@@ -40,6 +46,8 @@ export function GameStateContext({children}: GameStateProviderProps) {
           time, setTime,
           contHelps, setContHelps,
           numberCounter,setNumberCounter,
+          inputStack, setInputStack,
+          showNotes, setShowNotes,
         }}
     >
         {children}

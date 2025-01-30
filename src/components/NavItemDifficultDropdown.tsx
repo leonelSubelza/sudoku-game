@@ -49,7 +49,7 @@ function NavItemDifficultDropdownComponent() {
   return (
     <AlertDialog>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
         {/* <Button variant={"outline"} className="">Dificultad: {getDifficultName(difficult)}</Button> */}
           <Button 
           variant="ghost"

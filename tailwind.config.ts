@@ -9,6 +9,9 @@ export default {
   ],
   theme: {
   	extend: {
+			// fontFamily: {
+			// 	indieFlower: ["var(--font-indie-flower)"],
+			// },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

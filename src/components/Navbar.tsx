@@ -18,9 +18,9 @@ function NavbarComponent() {
 
   return (
       <nav className="flex w-full">
-        <div className="flex flex-wrap w-full items-center justify-evenly my-auto ml-0 mr-auto gap-1
+        <div className="flex w-full items-center justify-between my-auto ml-0 mr-auto gap-1
         md:w-full 
-        lg:w-[60%] lg:mt-auto lg:justify-between">
+        lg:w-[60%] lg:mt-auto">
           <div className="flex justify-center items-center select-none p-1">
             {/* <h1>Sudoku</h1> */}
             <NavItemSudokuOptions />
@@ -31,11 +31,11 @@ function NavbarComponent() {
           </div>
 
           <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
-            <span>Tiempo: </span>
+            <span>Tiempo</span>
             <span>{time}</span>
           </div>
           <div className="flex flex-col justify-center items-center text-sm/6 font-semibold select-none p-1">
-            <span>Errores: </span>
+            <span>Errores</span>
             <span>{errors}</span>
           </div>
 
