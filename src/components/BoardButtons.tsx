@@ -1,4 +1,4 @@
-import { Eraser, Lightbulb, Pencil, Undo2 } from "lucide-react";
+import { Eraser, Lightbulb, Pencil, PencilOff, Undo2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
 import { useContext } from "react";
@@ -7,13 +7,14 @@ import { Cell } from "@/model/entities";
 interface Props {
   onDeleteValue: () => void;
   onUndoValue: () => void,
-  onActiveNotes: () => void,
 }
 
-function BoardButtons( {onDeleteValue, onUndoValue,onActiveNotes}:Props ) {
+function BoardButtons( {onDeleteValue, onUndoValue}:Props ) {
   const {
     contHelps,
     setContHelps,
+    showNotes,
+    setShowNotes
   } = useContext(gameStateContext) as GameStateContextType;
 
   return (
@@ -34,10 +35,10 @@ function BoardButtons( {onDeleteValue, onUndoValue,onActiveNotes}:Props ) {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={onActiveNotes}
-                className="lg:w-[55px] lg:h-[55px]"
+                onClick={()=>setShowNotes(!showNotes)}
+                className={`${showNotes && 'bg-cell-status-selected hover:bg-cell-status-selected'} lg:w-[55px] lg:h-[55px]`}
               >
-                <Pencil />
+                {showNotes ? <Pencil /> : <PencilOff />}
               </Button>
               <span className="p-2">Notas</span>
             </div>

@@ -1,5 +1,5 @@
 import { CellStatus, CellValueStatus } from "@/model/enums";
-import { BoardGame, Cell } from "@/model/entities";
+import { Board, BoardGame, Cell } from "@/model/entities";
 
 export function useCellFunctions() {
   const resetCellColors = (board: BoardGame) => {
@@ -83,5 +83,19 @@ export function useCellFunctions() {
     }
     return classNames;
   }
-  return { getBackgroundCell, getBorderCell, getColorCell, resetCellColors, updateEqualsValues, updateRowAndColRelated }
+
+  const isANumber = (value: string): boolean => {
+    const numbers: string[] = ['0','1','2','3','4','5','6','7','8','9'];
+    return numbers.includes(value);
+  }
+
+  return {
+    getBackgroundCell,
+    getBorderCell,
+    getColorCell,
+    resetCellColors,
+    updateEqualsValues,
+    updateRowAndColRelated,
+    isANumber,
+  };
 }

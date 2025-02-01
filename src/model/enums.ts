@@ -23,4 +23,5 @@ export enum GameStatus {
   RESET = "RESET",
   NEW_GAME = "NEW_GAME",
   FINISHED = "FINISHED",
+  PAUSED = "PAUSED",
 }

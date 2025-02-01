@@ -11,7 +11,7 @@ import { Button } from "./ui/button";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
 import { useCellFunctions } from "@/hooks/useCellFunctions";
 import { useSudokuFunctions } from "@/hooks/useSudokuFunctions";
-import NavbarComponent from "./Navbar";
+import NavbarComponent from "./Navbar/Navbar";
 import BoardComponent from "./Board";
 import BoardNumbersButtons from "./BoardNumbersButtons";
 import BoardButtons from "./BoardButtons";
@@ -127,6 +127,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     gameState,
     setGameState,
     inputStack, setInputStack,
+    showNotes, setShowNotes,
   } = useContext(gameStateContext) as GameStateContextType;
   
   const {
@@ -136,21 +137,40 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     resetCellColors,
     updateEqualsValues,
     updateRowAndColRelated,
+    isANumber,
   } = useCellFunctions();
 
-  const { showCorrectValue,getActualNumberCounter } = useSudokuFunctions();
+  const { showCorrectValue,getActualNumberCounter,isCorrectAndDefaultValue } = useSudokuFunctions();
 
   const updateNewCellActive = (cell: Cell) => {
     resetCellColors(board);
 
     board[cell.row][cell.col].status = CellStatus.SELECTED;
     
-    updateRowAndColRelated(board,cell);
+    // updateRowAndColRelated(board,cell);
     if(cell.value !== 0){
       updateEqualsValues(board,cell);
     }
     setBoard([...board]);
     setCellActive(board[cell.row][cell.col]);
+  }
+
+  const cleanNotesInLineAndRow = (newValue: number) => {
+    if(!cellActive) return;
+
+    console.log("SE BORRA NOTAS IGUAELS A "+newValue);
+    
+    // Delete all the same numbers in the col
+    for(let i=0; i<9; i++) {
+      board[cellActive.row][i].notes = board[cellActive.row][i].notes.map( (value: number) => value=== newValue ? 0 : value);
+    }
+
+    // Delete all the same numbers in the row
+    for(let j=0; j<9; j++) {
+      board[j][cellActive.col].notes = board[j][cellActive.col].notes.map( (value: number) => value=== newValue ? 0 : value);
+    }
+
+
   }
 
   const handleCellClick = (event: any, cell: Cell) => {
@@ -181,14 +201,17 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     console.log("delete");
     console.log(cellActive);
     
-    if(cellActive&& cellActive.valueStatus === CellValueStatus.INCORRECT) {
+    if(cellActive&& (cellActive.valueStatus === CellValueStatus.INCORRECT || 
+        !isCorrectAndDefaultValue(board,boardComplete,cellActive)) ) {
       // No hace falta borrar el numberCounter porque solo se puede borrar un valor incorrecto, el cual no afectó
       // previamente al numberCounter
       // numberCounter[cellActive.value-1]--;
       // setNumberCounter([...numberCounter]);
 
       cellActive.value = 0;
+      cellActive.notes = [];
       board[cellActive.row][cellActive.col].value = 0;
+      board[cellActive.row][cellActive.col].notes = [];
       cellActive.valueStatus = CellValueStatus.DEFAULT;
 
       setBoard([...board]);
@@ -199,24 +222,51 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     }
   }
 
-  const updateCellValue = (newValue: string|number) => {
-    const numbers: string[] = ['0','1','2','3','4','5','6','7','8','9'];
+  const setNoteValue = (value: number) => {
+    if(cellActive) {
+      if(board[cellActive.row][cellActive.col].notes[value-1] === value){
+        cellActive.notes[value-1] = 0;
+        board[cellActive.row][cellActive.col].notes[value-1] = 0;
+      } else{
+        cellActive.notes[value-1] = value;
+        board[cellActive.row][cellActive.col].notes[value-1] = value;
 
-    if(numbers.includes(newValue as string) && cellActive && newValue !== '0'){
+        cellActive.value = 0;
+        board[cellActive.row][cellActive.col].value = 0;
+      }
+      setCellActive(cellActive);
+      setBoard([...board]);
+    }
+  }
+
+  const updateCellValue = (newValue: string|number) => {
+
+    if(showNotes && isANumber(newValue as string)) {
+      setNoteValue(Number.parseInt(newValue as string));
+      return;
+    }
+
+    if(isANumber(newValue as string) && cellActive && newValue !== '0' && numberCounter[newValue as number-1] !== 9 ){
       newValue = Number.parseInt(newValue as string);
+
+      cellActive.notes = [];
+      board[cellActive.row][cellActive.col].notes = [];
+
       cellActive.value = newValue;
       board[cellActive.row][cellActive.col].value = newValue;
 
       if(isCorrect(boardComplete,cellActive,newValue)) {
+        // cleanNotesInLineAndRow(newValue);
+
         cellActive.valueStatus = CellValueStatus.CORRECT;
         cellActive.status = CellStatus.NORMAL;
         numberCounter[newValue-1]++;
         setNumberCounter([...numberCounter]);
 
-        console.log("valor correcto:");
-        console.log(cellActive);
-        console.log("numberCounter: ");
-        console.log(numberCounter);
+        // console.log("valor correcto:");
+        // console.log(cellActive);
+        // console.log("numberCounter: ");
+        // console.log(numberCounter);
         
         
       }else{
@@ -270,22 +320,20 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     
     setGameState(GameStatus.PLAYING);
 
-    console.log("BoardComplete");
-    console.log(boardC);
-    console.log("BoardGame");
-    console.log(boardG);
+    // console.log("BoardComplete");
+    // console.log(boardC);
+    // console.log("BoardGame");
+    // console.log(boardG);
     
   }
 
-  const handleActiveNotes = () => {
-    
-  }
 
   const handleShowHelp = () => {
     if(contHelps===3) return;
-    const correctValue = showCorrectValue(boardComplete,board);
+    const correctValue: Cell|undefined = showCorrectValue(boardComplete,board);
     if(correctValue) {
       numberCounter[correctValue.value-1]++;
+      board[correctValue.row][correctValue.col].notes = [];
       setNumberCounter([...numberCounter]);
       setBoard([...board]);
       updateNewCellActive(board[correctValue.row][correctValue.col]);
@@ -313,10 +361,10 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     numberCounter.forEach( (value: number) => allNumberUsed = allNumberUsed && value===9 );
     if(allNumberUsed) {
       finishGame();
-      console.log("juego terminado");
+      // console.log("juego terminado");
     }else{
-      console.log("numberCounter:");
-      console.log(numberCounter);
+      // console.log("numberCounter:");
+      // console.log(numberCounter);
     }
     
   },[numberCounter])
@@ -349,7 +397,6 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
               <BoardButtons 
               onDeleteValue={deleteSelectedValue} 
               onUndoValue={handleUndoAction}
-              onActiveNotes={handleActiveNotes}
               />
               <BoardNumbersButtons onButtonPressed={handleBoardButtonPressed} />
             </div>

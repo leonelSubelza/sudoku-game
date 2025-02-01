@@ -176,8 +176,8 @@ export function useSudokuFunctions() {
     cell: Cell,
     newValue: number
   ) {
-    console.log("Board complete que se le pasa: ");
-    console.log(boardComplete);
+    // console.log("Board complete que se le pasa: ");
+    // console.log(boardComplete);
     
     // boardComplete.forEach( row => {
     //   let rowP = "";
@@ -188,8 +188,8 @@ export function useSudokuFunctions() {
       
     //   rowP = "";
     // }) 
-    console.log("cell");
-    console.log(cell);
+    // console.log("cell");
+    // console.log(cell);
     
     
 
@@ -245,14 +245,14 @@ export function useSudokuFunctions() {
     boardGame[randomCell.row][randomCell.col].value =
       boardComplete[randomCell.row][randomCell.col];
 
-    console.log("celda correcta:");
-    console.log(randomCell);
+    // console.log("celda correcta:");
+    // console.log(randomCell);
 
     // console.log("show correct value:");
-    console.log("BoardComplete");
-    console.log(boardComplete);
-    console.log("BoardGame");
-    console.log(boardGame);
+    // console.log("BoardComplete");
+    // console.log(boardComplete);
+    // console.log("BoardGame");
+    // console.log(boardGame);
 
     return randomCell;
   }
@@ -270,6 +270,13 @@ export function useSudokuFunctions() {
     return numberCounter;
   }
 
+  const isCorrectAndDefaultValue = (boardGame: BoardGame, boardComplete: Board, cell: Cell) => {
+    const cellBoardGame = boardGame[cell.row][cell.col];
+    return cellBoardGame.value === boardComplete[cell.row][cell.col]
+    && cellBoardGame.valueStatus === CellValueStatus.DEFAULT;
+  }
+
+  
   // Generar un Sudoku con 30 pistas (nivel medio)
   // const sudoku = generateSudoku(30);
 
@@ -285,6 +292,7 @@ export function useSudokuFunctions() {
     isCorrect,
     print,
     showCorrectValue,
-    getActualNumberCounter
+    getActualNumberCounter,
+    isCorrectAndDefaultValue,
   };
 }

@@ -2,6 +2,8 @@ import { gameStateContext, GameStateContextType } from '@/contexts/gameStateCont
 import { useCellFunctions } from '@/hooks/useCellFunctions';
 import { useSudokuFunctions } from '@/hooks/useSudokuFunctions';
 import { BoardGame, Cell } from '@/model/entities';
+import { GameStatus } from '@/model/enums';
+import { CirclePlay } from 'lucide-react';
 import { PT_Sans } from 'next/font/google';
 import React, { useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid';
@@ -18,7 +20,7 @@ interface Props {
 
 function BoardComponent( {boardGame, onCellClick}: Props ) {
   const {
-    showNotes
+    gameState, setGameState
   } = useContext(gameStateContext) as GameStateContextType;
   
 
@@ -28,13 +30,11 @@ function BoardComponent( {boardGame, onCellClick}: Props ) {
     getColorCell,
   } = useCellFunctions();
 
-  const { showCorrectValue,getActualNumberCounter } = useSudokuFunctions();
-
   const numbers: number[] = [1,2,3,4,5,6,7,8,9]
 
   return (
     <div
-      className="grid grid-cols-9 w-full gap-0 m-auto aspect-square select-none
+      className="relative grid grid-cols-9 w-full gap-0 m-auto aspect-square select-none
     md:w-[80%]
     lg:w-[60%]
 
@@ -56,21 +56,40 @@ function BoardComponent( {boardGame, onCellClick}: Props ) {
             md:text-xl lg:text-xl`}
               onClick={(event) => onCellClick(event, cell)}
             >
-              <span>{cell.value !== 0 ? cell.value : ""}</span>
+              <span>
+                {cell.value !== 0 && gameState !== GameStatus.PAUSED
+                  ? cell.value
+                  : ""}
+              </span>
 
+              {/* Notes */}
               <div className="absolute grid grid-cols-3 w-full h-full gap-0 m-auto aspect-square select-none text-slate-400 dark:text-slate-300">
                 {numbers.map((value: number, index: number) => (
                   <div
                     key={value}
                     className={`flex justify-center items-center aspect-square text-[clamp(8px,2vw,12px)] overflow-hidden text-center whitespace-nowrap ${ptSans.className}`}
                   >
-                    {cell.notes[index] && <span>{value}</span>}
+                    <span>
+                      {cell.notes[index] && cell.notes[index] !== 0
+                        ? value
+                        : " "}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           ))
         )}
+      {gameState === GameStatus.PAUSED && (
+        <div
+          className="absolute flex w-full h-full justify-center items-center
+        md:w-full 
+        lg:m-w-[60%] lg:ml-0 lg:mr-auto
+        "
+        >
+          <CirclePlay className='hover:cursor-pointer size-[40px]' onClick={() => setGameState(GameStatus.PLAYING)} />
+        </div>
+      )}
     </div>
   );
 }

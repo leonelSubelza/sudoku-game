@@ -17,11 +17,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
+} from "../ui/alert-dialog";
 import { useContext, useState } from "react";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
 import { DIFFICULTS, GameStatus } from "@/model/enums";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
 
 const getDifficultName = (difficult: DIFFICULTS): string => {

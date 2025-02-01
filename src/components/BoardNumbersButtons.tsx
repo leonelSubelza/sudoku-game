@@ -12,7 +12,7 @@ interface Props {
 }
 
 function BoardNumbersButtons({onButtonPressed}: Props) {
-  const { numberCounter } = useContext(gameStateContext) as GameStateContextType;
+  const { numberCounter,showNotes } = useContext(gameStateContext) as GameStateContextType;
 
   return ( 
     <div className="flex mx-auto w-full max-w-full justify-evenly select-none
@@ -27,11 +27,11 @@ function BoardNumbersButtons({onButtonPressed}: Props) {
           // >
           //   <p>{value===0 ? '' : value}</p>
           // </button>
-          <Button variant="outline"  key={uuidv4()} className={`${numberCounter[index] && numberCounter[index] === 9 && 'opacity-0'} w-10 h-10 p-1 mt-1 font-semmibold text-xl
+          <Button variant="outline"  key={uuidv4()} className={`${numberCounter[index] && numberCounter[index] === 9 && !showNotes && 'opacity-0'} w-10 h-10 p-1 mt-1 font-semmibold text-xl
           dark:border-gray-400
           lg:p-2 lg:aspect-square lg:w-auto lg:h-auto lg:mt-0`}
           onClick={()=>onButtonPressed(value)}
-          disabled={numberCounter[index] === 9}
+          disabled={numberCounter[index] === 9 && !showNotes}
           >
             <p>{value===0 ? '' : value}</p>
           </Button>
