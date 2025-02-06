@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode;}) 
             enableSystem
             disableTransitionOnChange
           >
-            <main className="h-full w-full flex flex-col">
+            <main className="min-h-dvh w-full flex flex-col">
               {children}
             </main>
           </ThemeProvider>

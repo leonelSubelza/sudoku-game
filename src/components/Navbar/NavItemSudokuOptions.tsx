@@ -41,9 +41,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "../mode-toggle";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 export default function NavItemSudokuOptions() {
   const { setTheme } = useTheme();
+  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -105,7 +107,7 @@ export default function NavItemSudokuOptions() {
             </DropdownMenuPortal>
           </DropdownMenuSub>
 
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/rules")}>  
             <CircleHelp />
             <span>Cómo jugar</span>
             {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
