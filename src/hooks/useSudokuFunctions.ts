@@ -244,7 +244,7 @@ export function useSudokuFunctions() {
 
     boardGame[randomCell.row][randomCell.col].value =
       boardComplete[randomCell.row][randomCell.col];
-
+    
     // console.log("celda correcta:");
     // console.log(randomCell);
 

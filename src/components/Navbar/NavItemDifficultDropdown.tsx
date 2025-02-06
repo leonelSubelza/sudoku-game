@@ -43,7 +43,7 @@ function NavItemDifficultDropdownComponent() {
 
   const handleNewGame = () => {
     setDifficult(difficultChosen);
-    setGameState(GameStatus.RESET);
+    setGameState(GameStatus.NEW_GAME);
   }
 
   return (

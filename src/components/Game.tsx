@@ -109,6 +109,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
   // const { print, generateSudoku, getBoardGame, isCellValuePreviouslyCorrect, isCorrect } = useSudokuFunctions();
   
   const [board, setBoard] = useState<BoardGame>(initialBoard);
+  const [boardInitialValue, setBoardInitialValue] = useState<BoardGame>(structuredClone(initialBoard));
   const [boardComplete, setBoardComplete] = useState<Board>(initialBoardComplete);
   
   const [cellActive, setCellActive] = useState<Cell>();
@@ -146,7 +147,6 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     resetCellColors(board);
 
     board[cell.row][cell.col].status = CellStatus.SELECTED;
-    
     // updateRowAndColRelated(board,cell);
     if(cell.value !== 0){
       updateEqualsValues(board,cell);
@@ -309,15 +309,25 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
   }
 
   const resetGame = () => {
-    console.log("se REINCIAI");
-    const boardC: Board = generateSudoku(difficult);
-    const boardG = getBoardGame(structuredClone(boardC),difficult);
+    let boardC: Board = generateSudoku(difficult);
+    let boardG: BoardGame = getBoardGame(structuredClone(boardC),difficult);
+
+    if(gameState === GameStatus.RESET) {
+      boardC = boardComplete;
+      boardG = boardInitialValue;
+    }
+    if(gameState === GameStatus.NEW_GAME) {
+      boardC = generateSudoku(difficult);
+      boardG = getBoardGame(structuredClone(boardC),difficult);
+    }
+    
     setBoardComplete([...boardC]);
     setBoard([...boardG])
+    setBoardInitialValue(structuredClone(boardG));
+    setNumberCounter(getActualNumberCounter(boardG));
     setTime('00:00:00');
     setContHelps(3);
-    setNumberCounter(getActualNumberCounter(boardG));
-    
+    setErrors(0);
     setGameState(GameStatus.PLAYING);
 
     // console.log("BoardComplete");
@@ -334,6 +344,8 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     if(correctValue) {
       numberCounter[correctValue.value-1]++;
       board[correctValue.row][correctValue.col].notes = [];
+      board[correctValue.row][correctValue.col].status = CellStatus.NORMAL;
+      board[correctValue.row][correctValue.col].valueStatus = CellValueStatus.DEFAULT;
       setNumberCounter([...numberCounter]);
       setBoard([...board]);
       updateNewCellActive(board[correctValue.row][correctValue.col]);
@@ -347,10 +359,11 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     };
   }, [cellActive,errors]);
 
+  // it is activated when help button is pressed
   useEffect(()=> handleShowHelp() ,[contHelps])
 
   useEffect(() => {
-    if(gameState === GameStatus.RESET) {
+    if(gameState === GameStatus.RESET || gameState === GameStatus.NEW_GAME) {
       resetGame();
     }
 
