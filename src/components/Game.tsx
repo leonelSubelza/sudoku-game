@@ -390,9 +390,9 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
   return (
     <>
       <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
-        {/* <DialogTrigger asChild>
+        <DialogTrigger asChild>
         <Button variant="outline">Dialog</Button>
-      </DialogTrigger> lg:w-6/12 lg:max-w-screen-md*/}
+      </DialogTrigger> 
         <div className="flex flex-col m-auto w-[98%] m-h-dvh h-full
         md:w-[60%] md:h-auto
         lg:w-[60%] "

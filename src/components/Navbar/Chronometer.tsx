@@ -16,11 +16,15 @@ function Chronometer() {
 
   const handleTimeRunning = () => {
     if(gameState === GameStatus.FINISHED) {
-      stop();
+      setRunning(false);
+      return;
+    }
+    if(gameState === GameStatus.RESET || gameState === GameStatus.NEW_GAME) {
+      reset();
       return;
     }
     if(gameState === GameStatus.PLAYING){
-      start();
+      continueGame();
       return;
     }
   }
@@ -82,6 +86,7 @@ function Chronometer() {
   // Función para reiniciar el cronómetro
   const reset = () => {
     setRunning(false);
+    setTimeInSeconds(0);
     setTime('00:00:00');
   };
 

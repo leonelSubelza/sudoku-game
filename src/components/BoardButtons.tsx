@@ -2,7 +2,7 @@ import { Eraser, Lightbulb, Pencil, PencilOff, Undo2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
 import { useContext } from "react";
-import { Cell } from "@/model/entities";
+import { GameStatus } from "@/model/enums";
 
 interface Props {
   onDeleteValue: () => void;
@@ -11,11 +11,32 @@ interface Props {
 
 function BoardButtons( {onDeleteValue, onUndoValue}:Props ) {
   const {
+    gameState,
     contHelps,
     setContHelps,
     showNotes,
     setShowNotes
   } = useContext(gameStateContext) as GameStateContextType;
+
+  const handleHelpPressed = () => {
+    if(gameState === GameStatus.PAUSED) return;
+    setContHelps(contHelps - 1);
+  }
+
+  const handleNotesPressed = () => {
+    if(gameState === GameStatus.PAUSED) return;
+    setShowNotes(!showNotes);
+  }
+
+  const handleUndoPressed = () => {
+    if(gameState === GameStatus.PAUSED) return;
+    // onUndoValue();
+  }
+
+  const handleDeletePressed = () => {
+    if(gameState === GameStatus.PAUSED) return;
+    onDeleteValue();
+  }
 
   return (
 
@@ -24,7 +45,7 @@ function BoardButtons( {onDeleteValue, onUndoValue}:Props ) {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setContHelps(contHelps - 1)}
+                onClick={handleHelpPressed}
                 className="lg:w-[55px] lg:h-[55px]"
               >
                 <Lightbulb />
@@ -35,7 +56,7 @@ function BoardButtons( {onDeleteValue, onUndoValue}:Props ) {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={()=>setShowNotes(!showNotes)}
+                onClick={handleNotesPressed}
                 className={`${showNotes && 'bg-cell-status-selected hover:bg-cell-status-selected'} lg:w-[55px] lg:h-[55px]`}
               >
                 {showNotes ? <Pencil /> : <PencilOff />}
@@ -46,7 +67,7 @@ function BoardButtons( {onDeleteValue, onUndoValue}:Props ) {
               <Button
                 variant="outline"
                 size="icon"
-                // onClick={() => onUndoValue()}
+                onClick={handleUndoPressed}
                 className="lg:w-[55px] lg:h-[55px]"
               >
                 <Undo2 />
@@ -58,7 +79,7 @@ function BoardButtons( {onDeleteValue, onUndoValue}:Props ) {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => onDeleteValue()}
+                onClick={handleDeletePressed}
                 className="lg:w-[55px] lg:h-[55px]"
               >
                 <Eraser />

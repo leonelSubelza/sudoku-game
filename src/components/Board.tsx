@@ -1,6 +1,5 @@
 import { gameStateContext, GameStateContextType } from '@/contexts/gameStateContext';
 import { useCellFunctions } from '@/hooks/useCellFunctions';
-import { useSudokuFunctions } from '@/hooks/useSudokuFunctions';
 import { BoardGame, Cell } from '@/model/entities';
 import { GameStatus } from '@/model/enums';
 import { CirclePlay } from 'lucide-react';
@@ -32,6 +31,13 @@ function BoardComponent( {boardGame, onCellClick}: Props ) {
 
   const numbers: number[] = [1,2,3,4,5,6,7,8,9]
 
+  const getCellClasses = (cell: Cell) => {
+    return gameState !== GameStatus.PAUSED
+    ? `${getBorderCell(cell)} ${getBackgroundCell(cell.status)} ${getColorCell(cell.valueStatus)}`
+    : '';
+  }
+  
+
   return (
     <div
       className="relative grid grid-cols-9 w-full gap-0 m-auto aspect-square select-none
@@ -48,11 +54,8 @@ function BoardComponent( {boardGame, onCellClick}: Props ) {
 
             <div
               key={uuidv4()}
-              className={`flex relative justify-center items-center bg-cell-background aspect-square border rounded-xs w-auto h-auto text-center content-center items-center cursor-pointer text-lg ${getBorderCell(
-                cell
-              )} ${getBackgroundCell(cell.status)} ${getColorCell(
-                cell.valueStatus
-              )}
+              className={`flex relative justify-center items-center bg-cell-background aspect-square border rounded-xs w-auto h-auto text-center content-center items-center cursor-pointer text-lg ${getCellClasses(cell)}
+                
             md:text-xl lg:text-xl`}
               onClick={(event) => onCellClick(event, cell)}
             >

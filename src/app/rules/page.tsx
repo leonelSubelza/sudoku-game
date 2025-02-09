@@ -150,11 +150,8 @@ function page() {
           <CardHeader>
             <CardTitle className="text-2xl mb-2 flex justify-center items-center ml-0 mr-auto">
               <MessageSquareWarning color="orange" className="mr-1" />
-              Herramientas del Juego
+              Reglas Adicionales
             </CardTitle>
-            <CardDescription className="text-md">
-              Para ayudarte en tu partida, cuentas con las siguientes opciones:
-            </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div>

@@ -1,4 +1,4 @@
-import { Board, BoardSubgrids,BoardGame, Cell } from "@/model/entities";
+import { Board, BoardGame, Cell } from "@/model/entities";
 import { CellStatus, CellValueStatus, DIFFICULTS } from "@/model/enums";
 
 export function useSudokuFunctions() {
