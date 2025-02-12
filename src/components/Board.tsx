@@ -1,7 +1,7 @@
 import { gameStateContext, GameStateContextType } from '@/contexts/gameStateContext';
 import { useCellFunctions } from '@/hooks/useCellFunctions';
 import { BoardGame, Cell } from '@/model/entities';
-import { GameStatus } from '@/model/enums';
+import { CellStatus, CellValueStatus, GameStatus } from '@/model/enums';
 import { CirclePlay } from 'lucide-react';
 import { PT_Sans } from 'next/font/google';
 import React, { useContext } from 'react'
@@ -17,18 +17,64 @@ interface Props {
   onCellClick: (event: React.MouseEvent<HTMLDivElement>, cell: Cell)=> void;
 }
 
+
+const getBackgroundCell = (status: CellStatus): string => {
+  let bgColor = '';
+  if(status === CellStatus.NORMAL){
+    bgColor = 'bg-cell-status-normal';
+  }
+  if(status === CellStatus.SELECTED){
+    bgColor = 'bg-cell-status-selected';
+  }
+  if(status === CellStatus.EQUAL){
+    bgColor = 'bg-cell-status-equal';
+  }
+  if(status === CellStatus.SHADING){
+    bgColor = 'bg-cell-status-shading';
+  }
+  if(status === CellStatus.ERROR){
+    bgColor = 'bg-cell-status-error';
+  }
+  return bgColor;
+}
+
+const getBorderCell = (cell: Cell): string => {
+  let classNames = '';
+  if(cell.col===0 || cell.col===3|| cell.col===6){
+    classNames +='border-l-2 border-l-black '
+  }
+  if(cell.col===8){
+    classNames +='border-r-2 border-r-black  '
+  }
+
+  if(cell.row===0 || cell.row===3|| cell.row===6){
+    classNames +='border-t-2 border-t-black '
+  }
+  if(cell.row===8){
+    classNames +='border-b-2 border-b-black '
+  }
+  return classNames;
+}
+
+const getColorCell = (cellStatus: CellValueStatus): string => {
+  let classNames = '';
+  if(cellStatus === CellValueStatus.DEFAULT){
+  }
+  if(cellStatus === CellValueStatus.CORRECT){
+    classNames +='text-sky-400'
+  }
+  if(cellStatus === CellValueStatus.INCORRECT){
+    classNames +='text-red-600'
+  }
+  return classNames;
+}
+
+
 function BoardComponent( {boardGame, onCellClick}: Props ) {
   const {
     gameState, setGameState
   } = useContext(gameStateContext) as GameStateContextType;
   
-
-  const {
-    getBackgroundCell,
-    getBorderCell,
-    getColorCell,
-  } = useCellFunctions();
-
   const numbers: number[] = [1,2,3,4,5,6,7,8,9]
 
   const getCellClasses = (cell: Cell) => {

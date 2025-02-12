@@ -11,8 +11,9 @@ export type GameStateContextType = {
   time: string, setTime: (value: string)=> void,
   contHelps: number, setContHelps: (value: number)=> void,
   numberCounter: number[],setNumberCounter: (value: number[]) => void,
-  inputStack: Cell[], setInputStack: (value: Cell[]) => void,
   showNotes: boolean, setShowNotes: (value: boolean) => void,
+
+  inputStack: Cell[], setInputStack: (value: Cell[]) => void,
 }
 
 interface GameStateProviderProps {
@@ -46,8 +47,9 @@ export function GameStateContext({children}: GameStateProviderProps) {
           time, setTime,
           contHelps, setContHelps,
           numberCounter,setNumberCounter,
-          inputStack, setInputStack,
           showNotes, setShowNotes,
+
+          inputStack, setInputStack,
         }}
     >
         {children}

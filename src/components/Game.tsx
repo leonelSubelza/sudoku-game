@@ -4,7 +4,6 @@ import { Board, BoardGame, Cell } from "@/model/entities";
 import { useContext, useEffect, useState } from "react";
 import { CellStatus, CellValueStatus, GameStatus } from "@/model/enums";
 // import { getBackgroundCell, getBorderCell, getColorCell, resetCellColors, updateEqualsValues, updateRowAndColRelated } from "@/utils/cell.utils";
-import { generateSudoku, getBoardGame, isCellValuePreviouslyCorrect, isCorrect } from '@/utils/sudoku';
 import { Dialog, DialogTrigger } from "./ui/dialog";
 import DialogBoardComponent from "./DialogBoard";
 import { Button } from "./ui/button";
@@ -15,90 +14,6 @@ import NavbarComponent from "./Navbar/Navbar";
 import BoardComponent from "./Board";
 import BoardNumbersButtons from "./BoardNumbersButtons";
 import BoardButtons from "./BoardButtons";
-
-/*
-export const resetCellColors = (board: BoardGame) => {
-  board.forEach( (row: Cell[]) => {
-    row.forEach( (cell: Cell) => {
-      cell.status = CellStatus.NORMAL;
-    })
-  })
-}
-
-export const updateRowAndColRelated = (board: BoardGame, actualCell: Cell) => {
-  board[actualCell.row].forEach((cell: Cell) => {
-      if(cell !== actualCell){
-        cell.status = CellStatus.SHADING
-      }      
-  })
-  board.forEach((row: Cell[]) => {
-    if(row[actualCell.col] !== actualCell){
-      row[actualCell.col].status = CellStatus.SHADING;
-    }      
-})
-}
-
-export const updateEqualsValues = (board: BoardGame, actualCell: Cell) => {
-  board.forEach( (row: Cell[]) => {
-    row.forEach( (cell: Cell) => {
-      if(cell !== actualCell && cell.value === actualCell.value) {
-        cell.status = CellStatus.EQUAL;
-      }
-    })
-  })
-}
-
-export const getBackgroundCell = (status: CellStatus): string => {
-  let bgColor = '';
-  if(status === CellStatus.NORMAL){
-    bgColor = 'bg-cell-status-normal';
-  }
-  if(status === CellStatus.SELECTED){
-    bgColor = 'bg-cell-status-selected';
-  }
-  if(status === CellStatus.EQUAL){
-    bgColor = 'bg-cell-status-equal';
-  }
-  if(status === CellStatus.SHADING){
-    bgColor = 'bg-cell-status-shading';
-  }
-  if(status === CellStatus.ERROR){
-    bgColor = 'bg-cell-status-error';
-  }
-  return bgColor;
-}
-
-export const getBorderCell = (cell: Cell): string => {
-  let classNames = '';
-  if(cell.col===0 || cell.col===3|| cell.col===6){
-    classNames +='border-l-2 border-l-black '
-  }
-  if(cell.col===8){
-    classNames +='border-r-2 border-r-black  '
-  }
-
-  if(cell.row===0 || cell.row===3|| cell.row===6){
-    classNames +='border-t-2 border-t-black '
-  }
-  if(cell.row===8){
-    classNames +='border-b-2 border-b-black '
-  }
-  return classNames;
-}
-
-export const getColorCell = (cellStatus: CellValueStatus): string => {
-  let classNames = '';
-  if(cellStatus === CellValueStatus.DEFAULT){
-  }
-  if(cellStatus === CellValueStatus.CORRECT){
-    classNames +='text-sky-400'
-  }
-  if(cellStatus === CellValueStatus.INCORRECT){
-    classNames +='text-red-600'
-  }
-  return classNames;
-}
-  */
 
 interface Props {
   initialBoard: BoardGame;
@@ -127,21 +42,27 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     setNumberCounter,
     gameState,
     setGameState,
-    inputStack, setInputStack,
     showNotes, setShowNotes,
+
+    inputStack, setInputStack,
   } = useContext(gameStateContext) as GameStateContextType;
   
   const {
-    getBackgroundCell,
-    getBorderCell,
-    getColorCell,
     resetCellColors,
     updateEqualsValues,
     updateRowAndColRelated,
     isANumber,
   } = useCellFunctions();
 
-  const { showCorrectValue,getActualNumberCounter,isCorrectAndDefaultValue } = useSudokuFunctions();
+  const {
+    generateSudoku,
+    isCorrect,
+    getBoardGame,
+    isCellValuePreviouslyCorrect,
+    showCorrectValue,
+    getActualNumberCounter,
+    isCorrectAndDefaultValue,
+  } = useSudokuFunctions();
 
   const updateNewCellActive = (cell: Cell) => {
     resetCellColors(board);
@@ -173,33 +94,38 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
 
   }
 
+  const saveInputStackLastValue = (cell: Cell) => {
+    if(!cell) return;
+    inputStack.push(cell);
+    console.log("input stack");
+    console.log(inputStack);
+    
+    setInputStack([...inputStack])
+  }
+
   const handleCellClick = (event: any, cell: Cell) => {
     event.preventDefault();
     updateNewCellActive(cell);
   }
 
-  const handleUndoAction = () => {
+  const handleUndoAction = () => {    
     const lastAction: Cell|undefined = inputStack.at(-1);
-    console.log("lastAction");
-    console.log(lastAction);
-    
+    // console.log("lastAction");
+    // console.log(lastAction);
     if(!lastAction) return;
 
-    board[lastAction.row][lastAction.col] = lastAction;
-    if(isCorrect(boardComplete,lastAction,lastAction.value)) {
-      
-      numberCounter[lastAction.value-1]++;
-      setNumberCounter([...numberCounter]);
-    }
-
-    setBoard([...board]);
-    inputStack.filter( (c:Cell) => c!==lastAction );
+    updateNewCellValue(lastAction.value,lastAction);
+    inputStack.pop();
+    console.log("input stack");
+    console.log(inputStack);
     setInputStack([...inputStack]);
+    // with the last value cleared, we set the second to last value as active
+    updateNewCellActive(lastAction);
   }
 
   const deleteSelectedValue = () => {
-    console.log("delete");
-    console.log(cellActive);
+    // console.log("delete");
+    // console.log(cellActive);
     
     if(cellActive&& (cellActive.valueStatus === CellValueStatus.INCORRECT || 
         !isCorrectAndDefaultValue(board,boardComplete,cellActive)) ) {
@@ -208,17 +134,17 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
       // numberCounter[cellActive.value-1]--;
       // setNumberCounter([...numberCounter]);
 
+      //save the prev value for the undo action
+      saveInputStackLastValue(structuredClone(board[cellActive.row][cellActive.col]));
+      
       cellActive.value = 0;
       cellActive.notes = [];
+      cellActive.valueStatus = CellValueStatus.DEFAULT;
       board[cellActive.row][cellActive.col].value = 0;
       board[cellActive.row][cellActive.col].notes = [];
-      cellActive.valueStatus = CellValueStatus.DEFAULT;
-
+      
       setBoard([...board]);
       setCellActive(cellActive);
-
-      inputStack.push(cellActive)
-      setInputStack([...inputStack]);
     }
   }
 
@@ -239,50 +165,54 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     }
   }
 
-  const updateCellValue = (newValue: string|number) => {
+  const updateNewCellValue = ( newValue: number, activeCell: Cell) => {
+    if(!activeCell) return;
 
+    board[activeCell.row][activeCell.col].notes = [];
+    board[activeCell.row][activeCell.col].value = newValue;
+    
+    if(isCorrect(boardComplete,activeCell,newValue)) {
+      // cleanNotesInLineAndRow(newValue);
+      
+      
+      board[activeCell.row][activeCell.col].valueStatus = CellValueStatus.CORRECT;
+      board[activeCell.row][activeCell.col].status = CellStatus.NORMAL;
+      numberCounter[newValue-1]++;
+      setNumberCounter([...numberCounter]);
+      
+      // console.log("valor correcto:");
+      // console.log(cellActive);
+      // console.log("numberCounter: ");
+      // console.log(numberCounter);
+      
+      
+    }else{
+      setErrors(errors+1);
+      board[activeCell.row][activeCell.col].valueStatus = CellValueStatus.INCORRECT ;
+      board[activeCell.row][activeCell.col].status = CellStatus.ERROR;
+    }
+  }
+
+  const updateCellValue = (newValue: string|number) => {
     if(showNotes && isANumber(newValue as string)) {
       setNoteValue(Number.parseInt(newValue as string));
       return;
     }
 
-    if(isANumber(newValue as string) && cellActive && newValue !== '0' && numberCounter[newValue as number-1] !== 9 ){
+    if(isANumber(newValue as string) && cellActive && newValue !== '0' 
+    && numberCounter[newValue as number-1] !== 9 ) {
       newValue = Number.parseInt(newValue as string);
 
-      cellActive.notes = [];
-      board[cellActive.row][cellActive.col].notes = [];
-
-      cellActive.value = newValue;
-      board[cellActive.row][cellActive.col].value = newValue;
-
-      if(isCorrect(boardComplete,cellActive,newValue)) {
-        // cleanNotesInLineAndRow(newValue);
-
-        cellActive.valueStatus = CellValueStatus.CORRECT;
-        cellActive.status = CellStatus.NORMAL;
-        numberCounter[newValue-1]++;
-        setNumberCounter([...numberCounter]);
-
-        // console.log("valor correcto:");
-        // console.log(cellActive);
-        // console.log("numberCounter: ");
-        // console.log(numberCounter);
-        
-        
-      }else{
-        setErrors(errors+1);
-        cellActive.valueStatus = CellValueStatus.INCORRECT ;
-        cellActive.status = CellStatus.ERROR;
-      }
-      inputStack.push(cellActive)
-      setInputStack([...inputStack]);
+      //save the prev value for the undo action
+      saveInputStackLastValue(structuredClone(board[cellActive.row][cellActive.col]));
+      updateNewCellValue(newValue,cellActive);
     }
     if((newValue === 'Backspace' || newValue === '0') && cellActive){
       deleteSelectedValue();
       
     }
     if(cellActive) updateNewCellActive(cellActive);
-    setCellActive(cellActive);
+    // setCellActive(board[cellActive.row][cellActive.col]);
     setBoard([...board]);
   }
 

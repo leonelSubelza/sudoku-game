@@ -30,7 +30,7 @@ function BoardButtons( {onDeleteValue, onUndoValue}:Props ) {
 
   const handleUndoPressed = () => {
     if(gameState === GameStatus.PAUSED) return;
-    // onUndoValue();
+    onUndoValue();
   }
 
   const handleDeletePressed = () => {

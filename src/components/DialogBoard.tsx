@@ -19,7 +19,7 @@ function DialogBoardComponent() {
   return ( 
     <DialogContent className="sm:max-w-md">
       <DialogHeader className="">
-        <DialogTitle>Juego completado!</DialogTitle>
+        <DialogTitle>Sudoku completado!</DialogTitle>
         <DialogDescription className="py-3">
           Has completado el juego en <strong>{time}</strong> con <b>{errors}</b> {`${errors===1 ? 'error.' : 'errores.'}`}
         </DialogDescription>
