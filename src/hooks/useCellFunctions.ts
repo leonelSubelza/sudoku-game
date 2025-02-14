@@ -1,5 +1,5 @@
-import { CellStatus, CellValueStatus } from "@/model/enums";
-import { Board, BoardGame, Cell } from "@/model/entities";
+import { CellStatus } from "@/model/enums";
+import {  BoardGame, Cell } from "@/model/entities";
 
 export function useCellFunctions() {
   const resetCellColors = (board: BoardGame) => {

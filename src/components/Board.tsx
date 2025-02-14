@@ -1,5 +1,4 @@
 import { gameStateContext, GameStateContextType } from '@/contexts/gameStateContext';
-import { useCellFunctions } from '@/hooks/useCellFunctions';
 import { BoardGame, Cell } from '@/model/entities';
 import { CellStatus, CellValueStatus, GameStatus } from '@/model/enums';
 import { CirclePlay } from 'lucide-react';

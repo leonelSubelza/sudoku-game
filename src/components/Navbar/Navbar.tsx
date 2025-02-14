@@ -1,9 +1,5 @@
 "use client"
 
-import { ModeToggle } from "../mode-toggle";
-import { Eraser, Lightbulb, Pencil, RotateCcw, Undo2 } from "lucide-react";
-import { Button } from "../ui/button";
-
 import NavItemDifficultDropdownComponent from "./NavItemDifficultDropdown";
 import { useContext } from "react";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";

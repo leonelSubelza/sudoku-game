@@ -97,64 +97,8 @@ export function useSudokuFunctions() {
   function generateSudoku(clues: number = 30): Board {
     const board = createEmptyBoard();
     fillBoard(board);
-    // console.log("OG:");
-
-    // board.forEach( row => {
-    //   let rowP = "";
-    //   row.forEach( value => {
-    //     rowP = rowP + value +", ";
-    //   })
-    //   console.log(rowP);
-
-    //   rowP = "";
-    // })
-
-    // return removeNumbers(board, clues);
     return board;
   }
-
-  // POSIBLEMENTE BORRAR
-  /* Genera una matriz de 3x3 representando una cuadircula de 9 numeros del sudoku */
-  // function getSubgrid(
-  //   board: Board,
-  //   row: number,
-  //   col: number
-  // ): number[][] {
-  //   let subgrid: number[][] = [];
-  //   let rowSubgrid: number[] = [];
-  //   let colAux = col;
-  //   for (let count = 0; count < 9; count++) {
-  //     rowSubgrid.push(board[row][colAux]);
-  //     if (colAux === col + 2) {
-  //       subgrid.push(rowSubgrid);
-  //       rowSubgrid = [];
-  //       colAux = col;
-  //       row++;
-  //     } else {
-  //       colAux++;
-  //     }
-  //   }
-  //   return subgrid;
-  // }
-
-  // POSIBLEMENTE BORRAR
-  // Genera un tablero de sudoku de 9 casilleros de 3x3
-  // function getSubgrids(board: Board): BoardSubgrids {
-  //   let subgrids: number[][][] = [];
-
-  //   let row = 0;
-  //   let col = 0;
-  //   for (let count = 0; count < 9; count++) {
-  //     subgrids.push(getSubgrid(board, row, col));
-  //     if (col === 6) {
-  //       col = 0;
-  //       row = row + 3;
-  //     } else {
-  //       col = col + 3;
-  //     }
-  //   }
-  //   return subgrids;
-  // }
 
   function getBoardGame(board: Board, difficult: DIFFICULTS): BoardGame {
     removeNumbers(board, difficult);
@@ -176,23 +120,6 @@ export function useSudokuFunctions() {
     cell: Cell,
     newValue: number
   ) {
-    // console.log("Board complete que se le pasa: ");
-    // console.log(boardComplete);
-    
-    // boardComplete.forEach( row => {
-    //   let rowP = "";
-    //   row.forEach( (cell) => {
-    //     rowP = rowP + cell +", ";
-    //   })
-    //   console.log(rowP);
-      
-    //   rowP = "";
-    // }) 
-    // console.log("cell");
-    // console.log(cell);
-    
-    
-
     return boardComplete[cell.row][cell.col] === newValue;
   }
 
@@ -244,16 +171,6 @@ export function useSudokuFunctions() {
 
     boardGame[randomCell.row][randomCell.col].value =
       boardComplete[randomCell.row][randomCell.col];
-    
-    // console.log("celda correcta:");
-    // console.log(randomCell);
-
-    // console.log("show correct value:");
-    // console.log("BoardComplete");
-    // console.log(boardComplete);
-    // console.log("BoardGame");
-    // console.log(boardGame);
-
     return randomCell;
   }
 

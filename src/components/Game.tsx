@@ -4,9 +4,8 @@ import { Board, BoardGame, Cell } from "@/model/entities";
 import { useContext, useEffect, useState } from "react";
 import { CellStatus, CellValueStatus, GameStatus } from "@/model/enums";
 // import { getBackgroundCell, getBorderCell, getColorCell, resetCellColors, updateEqualsValues, updateRowAndColRelated } from "@/utils/cell.utils";
-import { Dialog, DialogTrigger } from "./ui/dialog";
+import { Dialog } from "./ui/dialog";
 import DialogBoardComponent from "./DialogBoard";
-import { Button } from "./ui/button";
 import { gameStateContext, GameStateContextType } from "@/contexts/gameStateContext";
 import { useCellFunctions } from "@/hooks/useCellFunctions";
 import { useSudokuFunctions } from "@/hooks/useSudokuFunctions";
@@ -42,7 +41,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     setNumberCounter,
     gameState,
     setGameState,
-    showNotes, setShowNotes,
+    showNotes,
 
     inputStack, setInputStack,
   } = useContext(gameStateContext) as GameStateContextType;
@@ -50,7 +49,6 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
   const {
     resetCellColors,
     updateEqualsValues,
-    updateRowAndColRelated,
     isANumber,
   } = useCellFunctions();
 
@@ -179,15 +177,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
       board[activeCell.row][activeCell.col].status = CellStatus.NORMAL;
 
       numberCounter[newValue-1]++;
-      setNumberCounter([...numberCounter]);
-      console.log("numberCounter:");
-      console.log(numberCounter);
-      
-      // console.log("valor correcto:");
-      // console.log(cellActive);
-      // console.log("numberCounter: ");
-      // console.log(numberCounter);
-      
+      setNumberCounter([...numberCounter]);    
       
     }else{
       setErrors(errors+1);
