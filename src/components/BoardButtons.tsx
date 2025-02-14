@@ -19,7 +19,7 @@ function BoardButtons( {onDeleteValue, onUndoValue}:Props ) {
   } = useContext(gameStateContext) as GameStateContextType;
 
   const handleHelpPressed = () => {
-    if(gameState === GameStatus.PAUSED) return;
+    if(gameState === GameStatus.PAUSED || contHelps===0) return;
     setContHelps(contHelps - 1);
   }
 

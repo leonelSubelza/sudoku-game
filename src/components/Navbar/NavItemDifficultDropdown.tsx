@@ -23,6 +23,7 @@ import { gameStateContext, GameStateContextType } from "@/contexts/gameStateCont
 import { DIFFICULTS, GameStatus } from "@/model/enums";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 const getDifficultName = (difficult: DIFFICULTS): string => {
   let ret = '';
@@ -39,11 +40,14 @@ interface Props {
 function NavItemDifficultDropdownComponent() {
   const { difficult, setDifficult,setGameState } = useContext(gameStateContext) as GameStateContextType;
 
-  const [difficultChosen,setDifficultChosen] = useState<DIFFICULTS>(difficult);
+  const [difficultChosenAux,setDifficultChosenAux] = useState<DIFFICULTS>(difficult);
+
+  const { setDifficultChosen } = useLocalStorage();
 
   const handleNewGame = () => {
-    setDifficult(difficultChosen);
+    setDifficult(difficultChosenAux);
     setGameState(GameStatus.NEW_GAME);
+    setDifficultChosen(difficultChosenAux);
   }
 
   return (
@@ -60,15 +64,15 @@ function NavItemDifficultDropdownComponent() {
         <DropdownMenuContent>
           {/* <DropdownMenuSeparator /> */}
 
-          <DropdownMenuItem onClick={() => setDifficultChosen(DIFFICULTS.EASY)}>
+          <DropdownMenuItem onClick={() => setDifficultChosenAux(DIFFICULTS.EASY)}>
             <AlertDialogTrigger>Fácil</AlertDialogTrigger>
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => setDifficultChosen(DIFFICULTS.NORMAL)}>
+          <DropdownMenuItem onClick={() => setDifficultChosenAux(DIFFICULTS.NORMAL)}>
             <AlertDialogTrigger>Medio</AlertDialogTrigger>
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => setDifficultChosen(DIFFICULTS.HARD)}>
+          <DropdownMenuItem onClick={() => setDifficultChosenAux(DIFFICULTS.HARD)}>
             <AlertDialogTrigger>Dificil</AlertDialogTrigger>
           </DropdownMenuItem>
         </DropdownMenuContent>

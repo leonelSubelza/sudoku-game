@@ -76,30 +76,27 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     setCellActive(board[cell.row][cell.col]);
   }
 
-  const cleanNotesInLineAndRow = (newValue: number) => {
-    if(!cellActive) return;
+  // const cleanNotesInLineAndRow = (newValue: number) => {
+  //   if(!cellActive) return;
 
-    console.log("SE BORRA NOTAS IGUAELS A "+newValue);
+  //   console.log("SE BORRA NOTAS IGUAELS A "+newValue);
     
-    // Delete all the same numbers in the col
-    for(let i=0; i<9; i++) {
-      board[cellActive.row][i].notes = board[cellActive.row][i].notes.map( (value: number) => value=== newValue ? 0 : value);
-    }
+  //   // Delete all the same numbers in the col
+  //   for(let i=0; i<9; i++) {
+  //     board[cellActive.row][i].notes = board[cellActive.row][i].notes.map( (value: number) => value=== newValue ? 0 : value);
+  //   }
 
-    // Delete all the same numbers in the row
-    for(let j=0; j<9; j++) {
-      board[j][cellActive.col].notes = board[j][cellActive.col].notes.map( (value: number) => value=== newValue ? 0 : value);
-    }
+  //   // Delete all the same numbers in the row
+  //   for(let j=0; j<9; j++) {
+  //     board[j][cellActive.col].notes = board[j][cellActive.col].notes.map( (value: number) => value=== newValue ? 0 : value);
+  //   }
 
 
-  }
+  // }
 
   const saveInputStackLastValue = (cell: Cell) => {
     if(!cell) return;
     inputStack.push(cell);
-    console.log("input stack");
-    console.log(inputStack);
-    
     setInputStack([...inputStack])
   }
 
@@ -112,12 +109,15 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     const lastAction: Cell|undefined = inputStack.at(-1);
     // console.log("lastAction");
     // console.log(lastAction);
-    if(!lastAction) return;
+    if(!lastAction) return;   
+    
+    if(cellActive && isCorrect(boardComplete,board[lastAction.row][lastAction.col],board[lastAction.row][lastAction.col].value)) {
+      numberCounter[board[lastAction.row][lastAction.col].value-1]--;
+      setNumberCounter([...numberCounter]);
+    }
 
     updateNewCellValue(lastAction.value,lastAction);
     inputStack.pop();
-    console.log("input stack");
-    console.log(inputStack);
     setInputStack([...inputStack]);
     // with the last value cleared, we set the second to last value as active
     updateNewCellActive(lastAction);
@@ -177,8 +177,11 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
       
       board[activeCell.row][activeCell.col].valueStatus = CellValueStatus.CORRECT;
       board[activeCell.row][activeCell.col].status = CellStatus.NORMAL;
+
       numberCounter[newValue-1]++;
       setNumberCounter([...numberCounter]);
+      console.log("numberCounter:");
+      console.log(numberCounter);
       
       // console.log("valor correcto:");
       // console.log(cellActive);
@@ -222,7 +225,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     if(cellActive && !isCellValuePreviouslyCorrect(boardComplete,cellActive)){
       updateCellValue(keyPressed);
     }
-    if(keyPressed.toUpperCase() === 'H') {
+    if(keyPressed.toUpperCase() === 'H' && contHelps>0) {
       setContHelps(contHelps-1);
     }
   };
@@ -256,6 +259,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     setBoardInitialValue(structuredClone(boardG));
     setNumberCounter(getActualNumberCounter(boardG));
     setTime('00:00:00');
+    setInputStack([]);
     setContHelps(3);
     setErrors(0);
     setGameState(GameStatus.PLAYING);
@@ -269,7 +273,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
 
 
   const handleShowHelp = () => {
-    if(contHelps===3) return;
+    if(contHelps===3 || contHelps === 0) return;
     const correctValue: Cell|undefined = showCorrectValue(boardComplete,board);
     if(correctValue) {
       numberCounter[correctValue.value-1]++;
@@ -320,9 +324,9 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
   return (
     <>
       <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
-        <DialogTrigger asChild>
+        {/* <DialogTrigger asChild>
         <Button variant="outline">Dialog</Button>
-      </DialogTrigger> 
+      </DialogTrigger>  */}
         <div className="flex flex-col m-auto w-[98%] m-h-dvh h-full
         md:w-[60%] md:h-auto
         lg:w-[60%] "

@@ -1,15 +1,19 @@
+"use client"
+
 import { Board, BoardGame } from "@/model/entities";
-import { DIFFICULTS } from "../model/enums";
 import { useSudokuFunctions } from "@/hooks/useSudokuFunctions";
 import GameComponent from "@/components/Game";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function Home() {
-  const difficult: DIFFICULTS = DIFFICULTS.NORMAL;
+
+  const { getDifficultChosen } = useLocalStorage();
+  // const difficult: DIFFICULTS = DIFFICULTS.NORMAL;
 
   const { generateSudoku, getBoardGame } = useSudokuFunctions();
 
-  const boardComplete: Board = generateSudoku(difficult);
-  const boardGame: BoardGame = getBoardGame(structuredClone(boardComplete),difficult);
+  const boardComplete: Board = generateSudoku(getDifficultChosen());
+  const boardGame: BoardGame = getBoardGame(structuredClone(boardComplete),getDifficultChosen());
 
   // print(boardComplete, boardGame);
 

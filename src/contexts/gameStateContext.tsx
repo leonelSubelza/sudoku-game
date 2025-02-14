@@ -1,5 +1,6 @@
 "use client"
 
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Cell } from "@/model/entities";
 import { DIFFICULTS, GameStatus } from "@/model/enums";
 import React, { ReactNode, useContext, useState } from "react";
@@ -28,8 +29,10 @@ export function useGameStateContext() {
 
 export function GameStateContext({children}: GameStateProviderProps) {
 
+  const { getDifficultChosen } = useLocalStorage();
+
   const [gameState, setGameState] = useState<GameStatus>(GameStatus.PLAYING);
-  const [difficult,setDifficult] = useState<DIFFICULTS>(DIFFICULTS.NORMAL);
+  const [difficult,setDifficult] = useState<DIFFICULTS>(getDifficultChosen());
   const [errors, setErrors] = useState<number>(0);
   const [time, setTime] = useState<string>('00:00:00');
   const [contHelps, setContHelps] = useState<number>(3);
