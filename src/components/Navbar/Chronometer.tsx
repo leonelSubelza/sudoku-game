@@ -72,10 +72,10 @@ function Chronometer() {
   }
 
   // Función para iniciar el cronómetro
-  const start = () => {
-    setTimeInSeconds(0);
-    setRunning(true);
-  };
+  // const start = () => {
+  //   setTimeInSeconds(0);
+  //   setRunning(true);
+  // };
 
   // Función para pausar el cronómetro
   const stop = () => {

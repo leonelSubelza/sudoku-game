@@ -98,7 +98,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
     setInputStack([...inputStack])
   }
 
-  const handleCellClick = (event: any, cell: Cell) => {
+  const handleCellClick = (event: React.MouseEvent<HTMLDivElement>, cell: Cell) => {
     event.preventDefault();
     updateNewCellActive(cell);
   }
@@ -211,7 +211,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
 
   const handleKeyDown = (event: KeyboardEvent) => {
     event.preventDefault();
-    let keyPressed: string|number = event.key;
+    const keyPressed: string|number = event.key;
     if(cellActive && !isCellValuePreviouslyCorrect(boardComplete,cellActive)){
       updateCellValue(keyPressed);
     }
@@ -232,7 +232,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
   }
 
   const resetGame = () => {
-    let boardC: Board = generateSudoku(difficult);
+    let boardC: Board = generateSudoku();
     let boardG: BoardGame = getBoardGame(structuredClone(boardC),difficult);
 
     if(gameState === GameStatus.RESET) {
@@ -240,7 +240,7 @@ function GameComponent({initialBoard, initialBoardComplete }: Props) {
       boardG = boardInitialValue;
     }
     if(gameState === GameStatus.NEW_GAME) {
-      boardC = generateSudoku(difficult);
+      boardC = generateSudoku();
       boardG = getBoardGame(structuredClone(boardC),difficult);
     }
     

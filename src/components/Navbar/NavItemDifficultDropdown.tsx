@@ -33,9 +33,9 @@ const getDifficultName = (difficult: DIFFICULTS): string => {
   return ret;
 }
 
-interface Props {
-  difficult: string;
-}
+// interface Props {
+//   difficult: string;
+// }
 
 function NavItemDifficultDropdownComponent() {
   const { difficult, setDifficult,setGameState } = useContext(gameStateContext) as GameStateContextType;

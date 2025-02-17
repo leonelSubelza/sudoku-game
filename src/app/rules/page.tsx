@@ -58,7 +58,7 @@ function page() {
     <div className="w-full h-dvh flex flex-col">
       <div className='flex flex-col w-full break-words my-3'>
         <h1 className="text-4xl font-bold">Reglas del Sudoku</h1> 
-        <p className='text-xl mt-3'>El objetivo del sudoku es rellenar una cuadrícula de 9 × 9 celdas (81 casillas) dividida en subcuadrículas de 3 × 3 (también llamadas "cajas" o "regiones") con las cifras del 1 al 9 partiendo de algunos números ya dispuestos en algunas de las celdas.</p>
+        <p className='text-xl mt-3'>El objetivo del sudoku es rellenar una cuadrícula de 9 x 9 celdas (81 casillas) dividida en subcuadrículas de 3 x 3 (también llamadas &quot;cajas&quot; o &quot;regiones&quot;) con las cifras del 1 al 9 partiendo de algunos números ya dispuestos en algunas de las celdas.</p>
       </div>
       <div className="w-full flex flex-col justify-center items-center gap-5 lg:flex-row lg:flex-wrap">
         <Card className={`${cn("w-[380px]")}`}>

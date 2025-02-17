@@ -94,7 +94,7 @@ export function useSudokuFunctions() {
   /**
    * Genera un Sudoku completo y elimina números para crear un desafío.
    */
-  function generateSudoku(clues: number = 30): Board {
+  function generateSudoku(): Board {
     const board = createEmptyBoard();
     fillBoard(board);
     return board;

@@ -11,7 +11,7 @@ import Chronometer from "./Chronometer";
 // }
 
 function NavbarComponent() {
-  const { time,errors,contHelps, setContHelps } = useContext(gameStateContext) as GameStateContextType;
+  const { errors } = useContext(gameStateContext) as GameStateContextType;
 
   return (
       <nav className="flex w-full">
